@@ -1,12 +1,12 @@
-# speedjob
+#Speedjob
 
-# Pré-requis technique : 
+#Pré-requis technique : 
 
-## Pour le front : 
+##Pour le front : 
 
-# Installer Vue dans le projet
-# Installer Vuetify de le projet
+Installer Vue dans le projet
+Installer Vuetify de le projet
 
-## Pour le back : 
+##Pour le back : 
 
 
