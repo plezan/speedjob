@@ -1,0 +1,22 @@
+{
+  "name": "speedjob",
+  "version": "1.0.0",
+  "description": "projet d'ecole, plateforme de correspondance entre ecole, eleve et entreprise",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plezan/speedjob.git"
+  },
+  "author": "Kilyan Fossey, Pierre Lezan, Fabien Barthas, Eric Mounster, Justine Bressin",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/plezan/speedjob/issues"
+  },
+  "homepage": "https://github.com/plezan/speedjob#readme",
+  "dependencies": {
+    "vuetify": "^1.0.1"
+  }
+}
