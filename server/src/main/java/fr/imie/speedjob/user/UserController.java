@@ -1,7 +1,6 @@
 package fr.imie.speedjob.user;
 
 import fr.imie.speedjob.SpeedjobApplication;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,7 @@ class UserController {
       profileImagePath = null;
       e.printStackTrace();
     }
+    System.out.println(profileImagePath);
   }
   // GET verbs
 
@@ -83,10 +83,28 @@ class UserController {
                 .build();
       else {
         byte[] bytes = StreamUtils.copyToByteArray(new FileInputStream(matches[0]));
-        return ResponseEntity
-                .ok()
-                .body(bytes);
+        // Get extension of uploaded file and locally create it
+        String[] filenameDotParts = matches[0].getName().split("\\.");
+        if (filenameDotParts[filenameDotParts.length-1].toLowerCase().equals("jpg")
+                || filenameDotParts[filenameDotParts.length-1].toLowerCase().equals("jpeg"))
+          return ResponseEntity
+                  .ok()
+                  .contentType(MediaType.IMAGE_JPEG)
+                  .body(bytes);
+        else if (filenameDotParts[filenameDotParts.length-1].toLowerCase().equals("png"))
+          return ResponseEntity
+                  .ok()
+                  .contentType(MediaType.IMAGE_PNG)
+                  .body(bytes);
+        else if (filenameDotParts[filenameDotParts.length-1].toLowerCase().equals("gif"))
+          return ResponseEntity
+                  .ok()
+                  .contentType(MediaType.IMAGE_GIF)
+                  .body(bytes);
       }
+      return ResponseEntity
+              .noContent()
+              .build();
 				} else {
 						return ResponseEntity
 														.notFound()
@@ -141,10 +159,7 @@ class UserController {
     File dir = new File(profileImagePath);
     File[] matches = dir.listFiles(((dir1, name) ->
             name.startsWith(firstName+"_"+lastName)));
-    if (matches.length > 0)
-      return true;
-    else
-      return false;
+    return matches.length > 0;
   }
 
   private void deleteProfileImageFile(String firstName, String lastName) {
