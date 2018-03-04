@@ -1,6 +1,7 @@
 package fr.imie.speedjob.user;
 
 import fr.imie.speedjob.SpeedjobApplication;
+import fr.imie.speedjob.contactBusiness.ContactBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,6 @@ class UserController {
       profileImagePath = null;
       e.printStackTrace();
     }
-    System.out.println(profileImagePath);
   }
   // GET verbs
 
@@ -54,15 +54,18 @@ class UserController {
   // POST verbs
 
   // A user
-  @RequestMapping(value = "/add", method = RequestMethod.POST)
+  @RequestMapping(value = "/addContactBusiness", method = RequestMethod.POST)
   public @ResponseBody String addUser(@RequestParam String firstName, @RequestParam String lastName,
-																																						@RequestParam String mail, @RequestParam String password) {
+																																						@RequestParam String mail, @RequestParam String password,
+                                      @RequestParam String job) {
   		if (userRepository.countByMail(mail) == 0) {
-						User user = new User();
-						user.setFirstName(firstName);
-						user.setLastName(lastName);
-						user.setMail(mail);
-						user.setPassword(bCryptPasswordEncoder.encode(password));
+						User user = new User(
+						        firstName,
+              lastName,
+              bCryptPasswordEncoder.encode(password),
+              mail,
+              new ContactBusiness(job)
+      );
 						userRepository.save(user);
 						return "Saved";
 				} else {
@@ -72,7 +75,7 @@ class UserController {
 
   @RequestMapping(value = "/getProfileImage", method = RequestMethod.GET)
 		public ResponseEntity<byte[]> getProfileImage(@RequestParam Long id) throws IOException {
-				User user = userRepository.getOne(id);
+				User user = userRepository.findById(id);
 				if (user != null) {
       File dir = new File(profileImagePath);
       File[] matches = dir.listFiles(((dir1, name) ->
@@ -114,7 +117,7 @@ class UserController {
 
 		@RequestMapping(value = "/updateProfileImage", method = RequestMethod.PUT)
 		public @ResponseBody String updateProfileImage(@RequestParam Long id, @RequestParam("profileImage") MultipartFile profileImage) {
-  		User user = userRepository.getOne(id);
+  		User user = userRepository.findById(id);
 				if (user != null) {
 				  String firstName = user.getFirstName();
 				  String lastName = user.getLastName();

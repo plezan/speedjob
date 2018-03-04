@@ -1,5 +1,7 @@
 package fr.imie.speedjob.user;
 
+import fr.imie.speedjob.contactBusiness.ContactBusiness;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,6 +27,18 @@ public class User {
 
 		@Column(unique = true)
   private String profileImageUrl;
+
+		@OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name =  "contactBusiness_id")
+		private ContactBusiness contactBusiness;
+
+  public User(String firstName, String lastName, String password, String mail, ContactBusiness contactBusiness) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.password = password;
+    this.mail = mail;
+    this.contactBusiness = contactBusiness;
+  }
 
   public Long getId() {
     return id;
@@ -70,11 +84,17 @@ public class User {
 				this.profileImageUrl = profileImageUrl;
 		}
 
-		@Override
+  @Override
   public String toString() {
-    return String.format(
-            "User[id=%d, firstName=%s, lastName=%s, password=%s, mail=%s, phone=%s, profileImageUrl=%s]",
-            id, firstName, lastName, password, mail, phone, profileImageUrl);
+    return "User{" +
+            "id=" + id +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", password='" + password + '\'' +
+            ", mail='" + mail + '\'' +
+            ", phone='" + phone + '\'' +
+            ", profileImageUrl='" + profileImageUrl + '\'' +
+            ", contactBusiness=" + contactBusiness +
+            '}';
   }
-
 }
