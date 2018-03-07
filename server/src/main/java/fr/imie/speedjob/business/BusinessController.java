@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/businesses")
 public class BusinessController {
@@ -17,7 +19,19 @@ public class BusinessController {
     this.businessRepository = businessRepository;
   }
 
-  // POST verbs
+  /*
+  GET
+   */
+
+  // All businesses
+  @GetMapping(value = "/", produces = "application/json")
+  public List<Business> findContactsBusiness() {
+    return businessRepository.findAll();
+  }
+
+  /*
+  POST
+   */
 
   // A business
   @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -26,7 +40,7 @@ public class BusinessController {
                                                    @RequestParam String phone, @RequestParam String siret) {
     JSONObject result = new JSONObject();
     if (!name.equals("") && !activityArea.equals("")
-        && websiteUrl.matches("/[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)")
+        && websiteUrl.matches("^(http:\\/\\/|https:\\/\\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?$")
         && (phone.length() == 10 || phone.length() == 12) && siret.length() == 14) {
       Business business = new Business(name, false, description, activityArea, websiteUrl, phone, siret);
       businessRepository.save(business);
@@ -39,7 +53,9 @@ public class BusinessController {
     }
   }
 
-  // PUT verbs
+  /*
+  PUT
+   */
 
   // Update name
   @PutMapping(value = "/name")
@@ -82,6 +98,10 @@ public class BusinessController {
   public ResponseEntity<Object> updateSiret(@RequestParam Long id, @RequestParam String siret) {
     return this.updateField(id, "siret", siret);
   }
+
+  /*
+  Private local functions
+   */
 
   private ResponseEntity<Object> updateField(Long id, String key, String value) {
     JSONObject result = new JSONObject();
@@ -134,7 +154,7 @@ public class BusinessController {
           break;
         }
         case "websiteUrl": {
-          if (value.matches("/[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)")) {
+          if (value.matches("^(http:\\/\\/|https:\\/\\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?$")) {
             business.setWebsiteUrl(value);
             result.put("status", "success");
             httpStatus = HttpStatus.OK;

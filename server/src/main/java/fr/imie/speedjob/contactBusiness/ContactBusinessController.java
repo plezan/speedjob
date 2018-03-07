@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/contactsBusiness")
 public class ContactBusinessController {
@@ -20,6 +22,16 @@ public class ContactBusinessController {
   public ContactBusinessController(ContactBusinessRepository contactBusinessRepository, UserRepository userRepository) {
     this.contactBusinessRepository = contactBusinessRepository;
     this.userRepository = userRepository;
+  }
+
+  /*
+  GET
+   */
+
+  // All contacts business
+  @GetMapping(value = "/", produces = "application/json")
+  public List<ContactBusiness> findContactsBusiness() {
+    return contactBusinessRepository.findAll();
   }
 
   /*

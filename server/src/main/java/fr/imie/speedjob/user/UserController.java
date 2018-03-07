@@ -48,51 +48,21 @@ class UserController {
     }
   }
 
-  // GET verbs
+  /*
+  GET
+   */
 
   // All users
-  @RequestMapping(value = "/", produces = "application/json", method = RequestMethod.GET)
+  @GetMapping(value = "/", produces = "application/json")
   public List<User> findUsers() {
   		return userRepository.findAll();
   }
 
-  @GetMapping(path = "/test", produces=MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> sayHello()
-  {
-    List<JSONObject> entities = new ArrayList<>();
-    JSONObject entity = new JSONObject();
-    entity.put("aa", "bb");
-    entities.add(entity);
-    return new ResponseEntity<>(entities, HttpStatus.OK);
-  }
-
-  // POST verbs
-
-  // A user
-  @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> addUser(@RequestParam String firstName, @RequestParam String lastName,
-																																						@RequestParam String mail, @RequestParam String password) {
-    JSONObject result = new JSONObject();
-    if (userRepository.countByMail(mail) == 0) {
-						User user = new User(
-						        firstName,
-              lastName,
-              bCryptPasswordEncoder.encode(password),
-              mail);
-						userRepository.save(user);
-						result.put("status", "success");
-						result.put("idUser", user.getId());
-      return new ResponseEntity<>(result, HttpStatus.OK);
-				} else {
-      result.put("status", "fail");
-      return new ResponseEntity<>(result, HttpStatus.CONFLICT);
-				}
-  }
-
-  @RequestMapping(value = "/getProfileImage", method = RequestMethod.GET)
-		public ResponseEntity<byte[]> getProfileImage(@RequestParam Long id) throws IOException {
-				User user = userRepository.findById(id);
-				if (user != null) {
+  // Get profileImage
+  @GetMapping(value = "/getProfileImage")
+  public ResponseEntity<byte[]> getProfileImage(@RequestParam Long id) throws IOException {
+    User user = userRepository.findById(id);
+    if (user != null) {
       File dir = new File(profileImagePath);
       File[] matches = dir.listFiles(((dir1, name) ->
               name.startsWith(user.getFirstName()+"_"+user.getLastName())));
@@ -124,14 +94,44 @@ class UserController {
       return ResponseEntity
               .noContent()
               .build();
+    } else {
+      return ResponseEntity
+              .notFound()
+              .build();
+    }
+  }
+
+  /*
+  POST
+   */
+
+  // A user
+  @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> addUser(@RequestParam String firstName, @RequestParam String lastName,
+																																						@RequestParam String mail, @RequestParam String password) {
+    JSONObject result = new JSONObject();
+    if (userRepository.countByMail(mail) == 0) {
+						User user = new User(
+						        firstName,
+              lastName,
+              bCryptPasswordEncoder.encode(password),
+              mail);
+						userRepository.save(user);
+						result.put("status", "success");
+						result.put("userId", user.getId());
+      return new ResponseEntity<>(result, HttpStatus.OK);
 				} else {
-						return ResponseEntity
-														.notFound()
-														.build();
+      result.put("status", "fail");
+      return new ResponseEntity<>(result, HttpStatus.CONFLICT);
 				}
   }
 
-		@RequestMapping(value = "/updateProfileImage", method = RequestMethod.PUT)
+  /*
+  PUT
+   */
+
+  // Update profileImage
+		@PutMapping(value = "/updateProfileImage")
 		public @ResponseBody String updateProfileImage(@RequestParam Long id, @RequestParam("profileImage") MultipartFile profileImage) {
   		User user = userRepository.findById(id);
 				if (user != null) {
@@ -173,6 +173,10 @@ class UserController {
 						return "User doesn't exists";
 				}
 		}
+
+		/*
+		Private local functions
+		 */
 
 		private boolean profileImageExists(String firstName, String lastName) {
     File dir = new File(profileImagePath);
