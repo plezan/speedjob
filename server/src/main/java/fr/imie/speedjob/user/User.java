@@ -1,5 +1,6 @@
 package fr.imie.speedjob.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fr.imie.speedjob.contactBusiness.ContactBusiness;
 
 import javax.persistence.*;
@@ -30,14 +31,16 @@ public class User {
 
 		@OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name =  "contactBusiness_id")
+  @JsonIgnoreProperties("user")
 		private ContactBusiness contactBusiness;
 
-  public User(String firstName, String lastName, String password, String mail, ContactBusiness contactBusiness) {
+		public User() {}
+
+  public User(String firstName, String lastName, String password, String mail) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.password = password;
     this.mail = mail;
-    this.contactBusiness = contactBusiness;
   }
 
   public Long getId() {
@@ -83,6 +86,10 @@ public class User {
 		public void setProfileImageUrl(String profileImageUrl) {
 				this.profileImageUrl = profileImageUrl;
 		}
+
+  public ContactBusiness getContactBusiness() { return contactBusiness; }
+
+  public void setContactBusiness(ContactBusiness contactBusiness) { this.contactBusiness = contactBusiness; }
 
   @Override
   public String toString() {

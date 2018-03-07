@@ -1,11 +1,14 @@
 package fr.imie.speedjob.contactBusiness;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
 import fr.imie.speedjob.user.User;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "contactBusiness")
+@Table(name = "contact_business")
 public class ContactBusiness {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -18,7 +21,21 @@ public class ContactBusiness {
   private boolean validationStatus;
 
   @OneToOne(mappedBy = "contactBusiness")
+  @JsonIgnoreProperties("contactBusiness")
   private User user;
+
+  @ManyToMany(cascade = CascadeType.ALL)
+  @JoinTable(name = "contactb_agencyb",
+          joinColumns = @JoinColumn(
+                  name = "contact_business_id",
+                  referencedColumnName = "id"),
+          inverseJoinColumns = @JoinColumn(
+                  name = "agency_business_id",
+                  referencedColumnName = "id"))
+  @JsonIgnoreProperties("contactsBusiness")
+  private List<AgencyBusiness> agenciesBusiness;
+
+  public ContactBusiness() {}
 
   public ContactBusiness(String job) {
     this.job = job;
@@ -45,13 +62,21 @@ public class ContactBusiness {
     this.user = user;
   }
 
+  public List<AgencyBusiness> getAgenciesBusiness() {
+    return agenciesBusiness;
+  }
+
+  public void setAgenciesBusiness(List<AgencyBusiness> agenciesBusiness) {
+    this.agenciesBusiness = agenciesBusiness;
+  }
+
   @Override
   public String toString() {
     return "ContactBusiness{" +
             "id=" + id +
             ", job='" + job + '\'' +
             ", validationStatus=" + validationStatus +
-            ", user=" + user +
+            ", agenciesBusiness=" + agenciesBusiness +
             '}';
   }
 }

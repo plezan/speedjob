@@ -1,13 +1,16 @@
 package fr.imie.speedjob.user;
 
 import fr.imie.speedjob.SpeedjobApplication;
+import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
 import fr.imie.speedjob.contactBusiness.ContactBusiness;
+import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -43,6 +47,7 @@ class UserController {
       e.printStackTrace();
     }
   }
+
   // GET verbs
 
   // All users
@@ -51,25 +56,36 @@ class UserController {
   		return userRepository.findAll();
   }
 
+  @GetMapping(path = "/test", produces=MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> sayHello()
+  {
+    List<JSONObject> entities = new ArrayList<>();
+    JSONObject entity = new JSONObject();
+    entity.put("aa", "bb");
+    entities.add(entity);
+    return new ResponseEntity<>(entities, HttpStatus.OK);
+  }
+
   // POST verbs
 
   // A user
-  @RequestMapping(value = "/addContactBusiness", method = RequestMethod.POST)
-  public @ResponseBody String addUser(@RequestParam String firstName, @RequestParam String lastName,
-																																						@RequestParam String mail, @RequestParam String password,
-                                      @RequestParam String job) {
-  		if (userRepository.countByMail(mail) == 0) {
+  @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> addUser(@RequestParam String firstName, @RequestParam String lastName,
+																																						@RequestParam String mail, @RequestParam String password) {
+    JSONObject result = new JSONObject();
+    if (userRepository.countByMail(mail) == 0) {
 						User user = new User(
 						        firstName,
               lastName,
               bCryptPasswordEncoder.encode(password),
-              mail,
-              new ContactBusiness(job)
-      );
+              mail);
 						userRepository.save(user);
-						return "Saved";
+						result.put("status", "success");
+						result.put("idUser", user.getId());
+      return new ResponseEntity<>(result, HttpStatus.OK);
 				} else {
-  				return "Mail already used";
+      result.put("status", "fail");
+      return new ResponseEntity<>(result, HttpStatus.CONFLICT);
 				}
   }
 
