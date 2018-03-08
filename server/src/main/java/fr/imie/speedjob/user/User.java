@@ -2,6 +2,7 @@ package fr.imie.speedjob.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fr.imie.speedjob.contactBusiness.ContactBusiness;
+import fr.imie.speedjob.student.Student;
 
 import javax.persistence.*;
 
@@ -33,6 +34,11 @@ public class User {
   @JoinColumn(name =  "contactBusiness_id")
   @JsonIgnoreProperties("user")
 		private ContactBusiness contactBusiness;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name =  "student_id")
+  @JsonIgnoreProperties("user")
+  private Student student;
 
 		public User() {}
 
@@ -90,6 +96,14 @@ public class User {
   public ContactBusiness getContactBusiness() { return contactBusiness; }
 
   public void setContactBusiness(ContactBusiness contactBusiness) { this.contactBusiness = contactBusiness; }
+
+  public Student getStudent() {
+    return student;
+  }
+
+  public void setStudent(Student student) {
+    this.student = student;
+  }
 
   @Override
   public String toString() {
