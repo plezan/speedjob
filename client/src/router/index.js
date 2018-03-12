@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import Blank from '@/components/layouts/blank'
+import Blank from '@/components/layouts/blank'
 // import Menu from '@/components/layouts/menu'
 
 // import HelloWorld from '@/components/HelloWorld'
-import inscriptionEntreprise from '@/components/layouts/inscriptionEntreprise'
+import SignUpBusiness from '@/components/business/signUpBusiness'
 
 Vue.use(Router)
 
@@ -13,7 +13,15 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: inscriptionEntreprise
+      component: Blank,
+      children: [{
+        path: 'signUpBusiness',
+        component: SignUpBusiness
+      }]
+    },
+    {
+      path: '*',
+      redirect: '/signUpBusiness'
     }
   ]
 })

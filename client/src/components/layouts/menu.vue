@@ -30,7 +30,7 @@
       <v-toolbar-title>SpeedJob</v-toolbar-title>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height>
+      <v-container fill-height>
         <v-layout justify-center align-center>
           <router-view></router-view>
         </v-layout>
