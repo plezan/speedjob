@@ -13,18 +13,55 @@
             <div class="headline mx-auto">Informations</div>
         </v-card-title>
         <v-card-text>
-          <v-layout xs12 sm6>
-            <v-text-field
-              name="lastName"
-              label="Nom"
-            ></v-text-field>
-          </v-layout>
-          <v-layout xs12 sm6>
-            <v-text-field
-              name="lastName"
-              label="Nom"
-            ></v-text-field>
-          </v-layout>
+          <v-flex>
+            <div xs12 sm5>
+              <v-text-field
+                name="lastName"
+                label="Nom"
+              ></v-text-field>
+              <v-text-field
+                name="firstName"
+                label="Prénom"
+              ></v-text-field>
+              <v-text-field
+                name="mail"
+                label="Mail"
+              ></v-text-field>
+              <v-text-field
+                name="phone"
+                label="Numéro de téléphone"
+              ></v-text-field>
+              <v-text-field
+                name="job"
+                label="Poste / fonction dans l'entreprise"
+              ></v-text-field>
+              <v-text-field
+                name="password"
+                label="Mot de passe"
+                hint="Au moins 6 caractères"
+                v-model="password"
+                min="6"
+                :append-icon="passwordHide ? 'visibility' : 'visibility_off'"
+                :append-icon-cb="() => (passwordHide = !passwordHide)"
+                :type="passwordHide ? 'password' : 'text'"
+                counter
+              ></v-text-field>
+              <v-text-field
+                name="password"
+                label="Confirmez votre mot de passe"
+                v-model="passwordRepetition"
+                min="6"
+                :type="'password'"
+              ></v-text-field>
+            </div>
+            <div xs12 sm5 offset-sm1>
+              <v-text-field
+                name="lastName"
+                label="Nom"
+              ></v-text-field>
+            </div>
+          </v-flex>
+
         </v-card-text>
       </v-card>
     </v-card>
@@ -109,6 +146,9 @@
   export default {
     data: function () {
       return {
+        passwordHide: true,
+        password: '',
+        passwordRepetition: '',
         errormessage: 'attention',
         test: 'test'
       }
