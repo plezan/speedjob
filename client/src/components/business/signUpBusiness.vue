@@ -1,20 +1,23 @@
 <template>
-  <v-flex xs12 sm8>
-    <v-card class="elevation-12">
-      <v-card-title primary-title>
-        <div class="mx-auto">
-          <div class="display-1">Speed Job</div>
-          <span class="grey--text">Plateforme d'embauche mettant en relation les entreprises et l'école du numérique IMIE</span>
-        </div>
-      </v-card-title>
+  <v-container xs12 sm10>
+    <v-card class="elevation-2">
+      <v-parallax src="https://wallpapersite.com/images/wallpapers/material-design-1920x1200-geometric-stock-dark-black-hd-10125.jpg" height="300">
+        <v-card-title primary-title>
+          <div class="mx-auto">
+            <div class="display-4">Speed Job</div>
+            <div class="mt-2">Plateforme d'embauche mettant en relation les entreprises et l'école du numérique IMIE</div>
+          </div>
+        </v-card-title>
+      </v-parallax>
 
-      <v-card class="elevation-6">
+
+      <v-card class="elevation-12">
         <v-card-title>
-            <div class="headline mx-auto">Informations</div>
+            <div class="headline mx-auto">INFORMATIONS</div>
         </v-card-title>
         <v-card-text>
-          <v-flex>
-            <div xs12 sm5>
+          <v-layout row wrap align-baseline>
+            <v-flex xs12 sm4 offset-sm1>
               <v-text-field
                 name="lastName"
                 label="Nom"
@@ -53,19 +56,64 @@
                 min="6"
                 :type="'password'"
               ></v-text-field>
-            </div>
-            <div xs12 sm5 offset-sm1>
+            </v-flex>
+            <v-flex xs12 sm4 offset-sm2>
               <v-text-field
-                name="lastName"
-                label="Nom"
+                name="businessName"
+                label="Raison sociale"
               ></v-text-field>
-            </div>
-          </v-flex>
+              <v-text-field
+                name="streetName"
+                label="Adresse : rue, impasse..."
+              ></v-text-field>
+              <v-layout row wrap>
+                <v-flex xs6>
+                  <v-text-field
+                    name="postalCode"
+                    label="Code Postal"
+                  ></v-text-field>
+                </v-flex>
+                <v-flex xs6>
+                  <v-text-field
+                    name="city"
+                    label="Ville"
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+              <v-text-field
+                name="businessPhone"
+                label="Téléphone de la société"
+              ></v-text-field>
+              <v-text-field
+                name="businessMail"
+                label="Mail de la société"
+              ></v-text-field>
+              <v-layout row wrap>
+                <v-flex xs6>
+                  <picture-input
+                    ref="pictureInput"
+                    @change="onChangeImage"
+                    accept="image/jpeg,image/png,image/gif"
+                    size="2"
+                    radius="10"
+                    removable
+                    removeButtonClass="input-group__input"
+                    zIndex="'1'"
+                    :customStrings="{
+                      upload: '<h1>Bummer!</h1>',
+                      drag: 'Déposez une image',
+                      remove: 'Supprimer l\'image'
+                    }">
+                  </picture-input>
+                </v-flex>
+              </v-layout>
 
+            </v-flex>
+          </v-layout>
         </v-card-text>
       </v-card>
     </v-card>
-  </v-flex>
+  </v-container>
   <!--<form id="form" class="form">
 
     <table>
@@ -142,8 +190,12 @@
 </template>
 
 <script>
+  import PictureInput from 'vue-picture-input'
 
   export default {
+    components: {
+      PictureInput
+    },
     data: function () {
       return {
         passwordHide: true,
@@ -154,11 +206,14 @@
       }
     },
     methods: {
-      loadImage: function (event) {
-        var img = document.getElementById('mylogo')
-        this.test = 'img'
-        img.src = URL.createObjectURL(event.target.files[0])
-        this.test = img.src
+      onChangeImage (image) {
+        console.log('New picture selected!')
+        if (image) {
+          console.log('Picture loaded.')
+          this.image = image
+        } else {
+          console.log('FileReader API not supported: use the <form>, Luke!')
+        }
       },
       submit: function (event) {
         var inputs = document.getElementsByClassName('oblg')
