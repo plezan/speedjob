@@ -10,8 +10,16 @@ export default {
 }
 </script>
 
-<style>
-  body {
-    font-family: "Intro";
-  }
+<style lang="stylus">
+  @font-face
+    font-family 'Intro'
+    src url('assets/typo/Intro.otf')
+
+  @font-face
+    font-family 'Intro Inline'
+    src url('assets/typo/Intro_Inline.otf')
+
+  body
+    font-family 'Intro' !important
+
 </style>

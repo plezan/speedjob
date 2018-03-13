@@ -4,12 +4,11 @@
       <v-parallax src="https://wallpapersite.com/images/wallpapers/material-design-1920x1200-geometric-stock-dark-black-hd-10125.jpg" height="300">
         <v-card-title primary-title>
           <div class="mx-auto">
-            <div class="display-4">Speed Job</div>
+            <div class="display-3 intro">Speed Job</div>
             <div class="mt-2">Plateforme d'embauche mettant en relation les entreprises et l'école du numérique IMIE</div>
           </div>
         </v-card-title>
       </v-parallax>
-
 
       <v-card class="elevation-12">
         <v-card-title>
@@ -89,20 +88,20 @@
                 label="Mail de la société"
               ></v-text-field>
               <v-layout row wrap>
-                <v-flex xs6>
+                <v-flex xs6 offset-xs3>
                   <picture-input
                     ref="pictureInput"
                     @change="onChangeImage"
                     accept="image/jpeg,image/png,image/gif"
+                    width="200"
+                    height="200"
                     size="2"
-                    radius="10"
+                    radius="2"
                     removable
-                    removeButtonClass="input-group__input"
-                    zIndex="'1'"
+                    :zIndex="1"
                     :customStrings="{
-                      upload: '<h1>Bummer!</h1>',
-                      drag: 'Déposez une image',
-                      remove: 'Supprimer l\'image'
+                      drag: 'Déposez un logo',
+                      remove: 'Supprimer le logo'
                     }">
                   </picture-input>
                 </v-flex>
@@ -248,31 +247,29 @@
 
 </script>
 
-<style scoped>
-  td {
-    padding: 5px;
-    padding-right: 50px;
-    border: 2px solid #48b9c7;
-    text-color: #ffec38
-  }
+<style lang="stylus">
+  td
+    padding 5px
+    padding-right 50px
+    border 2px solid #48b9c7
+    text-color #ffec38
 
-  form tr:last-child {
-    border: none
-  }
+  form tr:last-child
+    border none
 
-  #errormessage {
-    visibility: hidden;
-    color: #ef3d55;
-    text-align: center;
-    padding: 5px;
-  }
+  #errormessage
+    visibility hidden
+    color #ef3d55
+    text-align center
+    padding 5px
 
-  button {
-    background-color: #48b9c7;
-    padding: 5px;
-  }
+  button
+    background-color #48b9c7
+    padding 5px
 
-  #submit {
-    margin-left: auto
-  }
+  #submit
+    margin-left auto
+
+  .intro
+    font-family 'Intro Inline'
 </style>
