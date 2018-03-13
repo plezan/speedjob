@@ -1,6 +1,6 @@
 <template>
   <v-container xs12 sm10>
-    <v-card class="elevation-2">
+    <v-card class="elevation-2 scroll-30">
       <v-parallax src="https://wallpapersite.com/images/wallpapers/material-design-1920x1200-geometric-stock-dark-black-hd-10125.jpg" height="300">
         <v-card-title primary-title>
           <div class="mx-auto">
@@ -15,177 +15,137 @@
             <div class="headline mx-auto">INFORMATIONS</div>
         </v-card-title>
         <v-card-text>
-          <v-layout row wrap align-baseline>
-            <v-flex xs12 sm4 offset-sm1>
-              <v-text-field
-                name="lastName"
-                label="Nom"
-              ></v-text-field>
-              <v-text-field
-                name="firstName"
-                label="Prénom"
-              ></v-text-field>
-              <v-text-field
-                name="mail"
-                label="Mail"
-              ></v-text-field>
-              <v-text-field
-                name="phone"
-                label="Numéro de téléphone"
-              ></v-text-field>
-              <v-text-field
-                name="job"
-                label="Poste / fonction dans l'entreprise"
-              ></v-text-field>
-              <v-text-field
-                name="password"
-                label="Mot de passe"
-                hint="Au moins 6 caractères"
-                v-model="password"
-                min="6"
-                :append-icon="passwordHide ? 'visibility' : 'visibility_off'"
-                :append-icon-cb="() => (passwordHide = !passwordHide)"
-                :type="passwordHide ? 'password' : 'text'"
-                counter
-              ></v-text-field>
-              <v-text-field
-                name="password"
-                label="Confirmez votre mot de passe"
-                v-model="passwordRepetition"
-                min="6"
-                :type="'password'"
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 sm4 offset-sm2>
-              <v-text-field
-                name="businessName"
-                label="Raison sociale"
-              ></v-text-field>
-              <v-text-field
-                name="streetName"
-                label="Adresse : rue, impasse..."
-              ></v-text-field>
-              <v-layout row wrap>
-                <v-flex xs6>
-                  <v-text-field
-                    name="postalCode"
-                    label="Code Postal"
-                  ></v-text-field>
-                </v-flex>
-                <v-flex xs6>
-                  <v-text-field
-                    name="city"
-                    label="Ville"
-                  ></v-text-field>
-                </v-flex>
-              </v-layout>
-              <v-text-field
-                name="businessPhone"
-                label="Téléphone de la société"
-              ></v-text-field>
-              <v-text-field
-                name="businessMail"
-                label="Mail de la société"
-              ></v-text-field>
-              <v-layout row wrap>
-                <v-flex xs6 offset-xs3>
-                  <picture-input
-                    ref="pictureInput"
-                    @change="onChangeImage"
-                    accept="image/jpeg,image/png,image/gif"
-                    width="200"
-                    height="200"
-                    size="2"
-                    radius="2"
-                    removable
-                    :zIndex="1"
-                    :customStrings="{
-                      drag: 'Déposez un logo',
-                      remove: 'Supprimer le logo'
-                    }">
-                  </picture-input>
-                </v-flex>
-              </v-layout>
-
-            </v-flex>
-          </v-layout>
+          <v-form v-model="valid" ref="form" lazy-validation>
+            <v-layout row wrap align-baseline>
+              <v-flex xs12 sm4 offset-sm1>
+                <v-text-field
+                  name="lastName"
+                  label="Nom"
+                  :rules="lastNameRules"
+                  v-model="lastName"
+                ></v-text-field>
+                <v-text-field
+                  name="firstName"
+                  label="Prénom"
+                  :rules="firstNameRules"
+                  v-model="firstName"
+                ></v-text-field>
+                <v-text-field
+                  name="mail"
+                  label="Mail"
+                  :rules="mailRules"
+                  v-model="mail"
+                ></v-text-field>
+                <v-text-field
+                  name="phone"
+                  label="Numéro de téléphone"
+                  :rules="phoneRules"
+                  v-model="phone"
+                ></v-text-field>
+                <v-text-field
+                  name="job"
+                  label="Poste / fonction dans l'entreprise"
+                  :rules="jobRules"
+                  v-model="job"
+                ></v-text-field>
+                <v-text-field
+                  name="password"
+                  label="Mot de passe"
+                  hint="Au moins 6 caractères"
+                  :rules="passwordRules"
+                  v-model="password"
+                  min="6"
+                  :append-icon="passwordHide ? 'visibility' : 'visibility_off'"
+                  :append-icon-cb="() => (passwordHide = !passwordHide)"
+                  :type="passwordHide ? 'password' : 'text'"
+                  counter
+                ></v-text-field>
+                <v-text-field
+                  name="password"
+                  label="Confirmez votre mot de passe"
+                  :rules="passwordRepetitionRules"
+                  v-model="passwordRepetition"
+                  min="6"
+                  :type="'password'"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm4 offset-sm2>
+                <v-text-field
+                  name="businessName"
+                  label="Raison sociale"
+                ></v-text-field>
+                <v-text-field
+                  name="streetName"
+                  label="Adresse : rue, impasse..."
+                ></v-text-field>
+                <v-layout row wrap>
+                  <v-flex xs6>
+                    <v-text-field
+                      name="postalCode"
+                      label="Code Postal"
+                    ></v-text-field>
+                  </v-flex>
+                  <v-flex xs6>
+                    <v-text-field
+                      name="city"
+                      label="Ville"
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+                <v-text-field
+                  name="businessPhone"
+                  label="Téléphone de la société"
+                  :rules="phoneRules"
+                  v-model="businessPhone"
+                ></v-text-field>
+                <v-text-field
+                  name="businessMail"
+                  label="Mail de la société"
+                  :rules="mailRules"
+                  v-model="businessMail"
+                ></v-text-field>
+                <v-layout row wrap>
+                  <v-flex xs6 offset-xs3>
+                    <div class="input-picture">
+                      <picture-input
+                        ref="pictureInput"
+                        @change="onChangeImage"
+                        accept="image/jpeg,image/png,image/gif,application/pdf"
+                        width="200"
+                        height="200"
+                        size="2"
+                        radius="2"
+                        margin="10"
+                        removable
+                        :zIndex="1"
+                        :customStrings="{
+                        drag: 'Déposez un logo',
+                        remove: 'Supprimer le logo'
+                      }">
+                      </picture-input>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </v-layout>
+            <v-btn
+              @click="submit"
+              fab
+              large
+              absolute
+              right
+              color="success"
+              class="mt-3 mb-3 btn-validate"
+            >
+              <v-icon>
+                send
+              </v-icon>
+            </v-btn>
+          </v-form>
         </v-card-text>
       </v-card>
     </v-card>
   </v-container>
-  <!--<form id="form" class="form">
-
-    <table>
-      <thead>
-      <tr>
-        <th colspan="2"><h2>Informations</h2></th>
-      </tr>
-      </thead>
-      <tbody>
-
-      <tr>
-        <td>
-          <input class="oblg" type="text" id="name" placeholder="Nom*">
-        </td>
-        <td>
-          <input class="oblg" type="text" id="raisonSociale" placeholder="Raison Sociale*">
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <input class="oblg" type="text" id="firstname" placeholder="Prenom*">
-        </td>
-        <td>
-          <input class="oblg" type="text" id="adress" placeholder="Adresse*">
-        </td>
-      </tr>
-      <tr>
-        <td clas="input">
-          <input class="oblg" type="text" id="mail" placeholder="Mail*">
-        </td>
-        <td clas="input">
-          <input class="oblg" type="text" id="postalcode" placeholder="Code Postal*">
-        </td>
-      </tr>
-      <tr>
-        <td clas="input">
-          <input class="oblg" type="text" id="telperso" placeholder="telephone*">
-        </td>
-        <td clas="input">
-          <input class="oblg" type="text" id="telpro" placeholder="telephone*">
-        </td>
-      </tr>
-      <tr>
-        <td clas="input">
-          <input class="" type="text" id="job" placeholder="Fonction">
-        </td>
-        <td clas="input">
-          <input class="oblg" type="text" id="mail2" placeholder="Mail*">
-        </td>
-      </tr>
-      <tr>
-        <td clas="input">
-          <input class="oblg" type="password" id="password" placeholder="Mot de Passe">
-        </td>
-        <td clas="input" rowspan="2">
-          <img id="mylogo" src="">
-          <input type="file" id="logo" accept="image/*" onchange="loadImage(event)">
-        </td>
-      </tr>
-      <tr>
-        <td clas="input">
-          <input class="oblg" type="password" id="password2" placeholder="Confirmer le mot de passe">
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <div id="errormessage">
-      <p>{{errormessage}}</p>
-    </div>
-    <div id="submit">
-      <button v-on:click="submit">Valider</button>
-    </div>
-  </form>-->
 </template>
 
 <script>
@@ -197,11 +157,52 @@
     },
     data: function () {
       return {
+        valid: false,
+        firstName: '',
+        firstNameRules: [
+          v => !!v || 'Le prénom est obligatoire',
+          v => (v && v.length <= 21) || 'Le prénom doit être inférieur ou égal à 20 caractères'
+        ],
+        lastName: '',
+        lastNameRules: [
+          v => !!v || 'Le nom de famille est obligatoire',
+          v => (v && v.length <= 41) || 'Le nom de famille doit être inférieur ou égal à 40 caractères'
+        ],
+        mail: '',
+        mailRules: [
+          v => !!v || 'Le mail est obligatoire',
+          v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Le mail n\'est pas valide'
+        ],
+        phone: '',
+        phoneRules: [
+          v => !!v || 'Le numéro de téléphone est obligatoire',
+          v => /^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/.test(v) || 'Le numéro de téléphone n\'est pas valide'
+        ],
+        job: '',
+        jobRules: [
+          v => !!v || 'Le poste est obligatoire',
+          v => (v && v.length > 20) || 'Le titre du poste doit être inférieur ou égal à 20 caractères'
+        ],
         passwordHide: true,
         password: '',
+        passwordRules: [
+          v => !!v || 'Le mot de passe est obligatoire',
+          v => (v && v.length >= 6) || 'Le mot de passe doit contenir au moins 6 caractères',
+          v => (v && v.length <= 31) || 'Le mot de passe doit contenir moins de 30 caractères'
+        ],
         passwordRepetition: '',
-        errormessage: 'attention',
-        test: 'test'
+        passwordRepetitionRules: [
+          v => !!v || 'Vous devez répéter votre mot de passe',
+          v => (v && v === this.password) || 'Les mots de passe ne correspondent pas'
+        ],
+        businessName: '',
+        streetName: '',
+        streetNumber: '',
+        postalCode: '',
+        city: '',
+        businessPhone: '',
+        businessMail: '',
+        image: null
       }
     },
     methods: {
@@ -210,6 +211,7 @@
         if (image) {
           console.log('Picture loaded.')
           this.image = image
+          console.log(image)
         } else {
           console.log('FileReader API not supported: use the <form>, Luke!')
         }
@@ -272,4 +274,15 @@
 
   .intro
     font-family 'Intro Inline'
+
+  .btn-validate
+    z-index 1 !important
+    bottom -40px
+    right -30px
+
+  .input-picture
+    margin-bottom 50px
+
+  .scroll-30
+    margin-bottom 30px
 </style>
