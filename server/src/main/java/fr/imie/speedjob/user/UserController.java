@@ -1,12 +1,16 @@
 package fr.imie.speedjob.user;
 
 import fr.imie.speedjob.SpeedjobApplication;
+import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
+import fr.imie.speedjob.contactBusiness.ContactBusiness;
+import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -41,39 +46,23 @@ class UserController {
       profileImagePath = null;
       e.printStackTrace();
     }
-    System.out.println(profileImagePath);
   }
-  // GET verbs
+
+  /*
+  GET
+   */
 
   // All users
-  @RequestMapping(value = "/", produces = "application/json", method = RequestMethod.GET)
+  @GetMapping(value = "/", produces = "application/json")
   public List<User> findUsers() {
   		return userRepository.findAll();
   }
 
-  // POST verbs
-
-  // A user
-  @RequestMapping(value = "/add", method = RequestMethod.POST)
-  public @ResponseBody String addUser(@RequestParam String firstName, @RequestParam String lastName,
-																																						@RequestParam String mail, @RequestParam String password) {
-  		if (userRepository.countByMail(mail) == 0) {
-						User user = new User();
-						user.setFirstName(firstName);
-						user.setLastName(lastName);
-						user.setMail(mail);
-						user.setPassword(bCryptPasswordEncoder.encode(password));
-						userRepository.save(user);
-						return "Saved";
-				} else {
-  				return "Mail already used";
-				}
-  }
-
-  @RequestMapping(value = "/getProfileImage", method = RequestMethod.GET)
-		public ResponseEntity<byte[]> getProfileImage(@RequestParam Long id) throws IOException {
-				User user = userRepository.getOne(id);
-				if (user != null) {
+  // Get profileImage
+  @GetMapping(value = "/getProfileImage")
+  public ResponseEntity<byte[]> getProfileImage(@RequestParam Long id) throws IOException {
+    User user = userRepository.findById(id);
+    if (user != null) {
       File dir = new File(profileImagePath);
       File[] matches = dir.listFiles(((dir1, name) ->
               name.startsWith(user.getFirstName()+"_"+user.getLastName())));
@@ -105,16 +94,46 @@ class UserController {
       return ResponseEntity
               .noContent()
               .build();
+    } else {
+      return ResponseEntity
+              .notFound()
+              .build();
+    }
+  }
+
+  /*
+  POST
+   */
+
+  // A user
+  @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> addUser(@RequestParam String firstName, @RequestParam String lastName,
+																																						@RequestParam String mail, @RequestParam String password) {
+    JSONObject result = new JSONObject();
+    if (userRepository.countByMail(mail) == 0) {
+						User user = new User(
+						        firstName,
+              lastName,
+              bCryptPasswordEncoder.encode(password),
+              mail);
+						userRepository.save(user);
+						result.put("status", "success");
+						result.put("userId", user.getId());
+      return new ResponseEntity<>(result, HttpStatus.OK);
 				} else {
-						return ResponseEntity
-														.notFound()
-														.build();
+      result.put("status", "fail");
+      return new ResponseEntity<>(result, HttpStatus.CONFLICT);
 				}
   }
 
-		@RequestMapping(value = "/updateProfileImage", method = RequestMethod.PUT)
+  /*
+  PUT
+   */
+
+  // Update profileImage
+		@PutMapping(value = "/updateProfileImage")
 		public @ResponseBody String updateProfileImage(@RequestParam Long id, @RequestParam("profileImage") MultipartFile profileImage) {
-  		User user = userRepository.getOne(id);
+  		User user = userRepository.findById(id);
 				if (user != null) {
 				  String firstName = user.getFirstName();
 				  String lastName = user.getLastName();
@@ -154,6 +173,10 @@ class UserController {
 						return "User doesn't exists";
 				}
 		}
+
+		/*
+		Private local functions
+		 */
 
 		private boolean profileImageExists(String firstName, String lastName) {
     File dir = new File(profileImagePath);

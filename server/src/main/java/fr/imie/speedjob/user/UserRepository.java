@@ -7,8 +7,7 @@ import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
   List<User> findAll();
+  User findById(Long id);
   User findByMail(String mail);
   Long countByMail(String mail);
-		@Override
-		User getOne(Long id);
 }

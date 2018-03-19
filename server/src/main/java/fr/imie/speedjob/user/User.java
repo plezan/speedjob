@@ -1,5 +1,8 @@
 package fr.imie.speedjob.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fr.imie.speedjob.contactBusiness.ContactBusiness;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,6 +28,20 @@ public class User {
 
 		@Column(unique = true)
   private String profileImageUrl;
+
+		@OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name =  "contactBusiness_id")
+  @JsonIgnoreProperties("user")
+		private ContactBusiness contactBusiness;
+
+		public User() {}
+
+  public User(String firstName, String lastName, String password, String mail) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.password = password;
+    this.mail = mail;
+  }
 
   public Long getId() {
     return id;
@@ -70,11 +87,21 @@ public class User {
 				this.profileImageUrl = profileImageUrl;
 		}
 
-		@Override
-  public String toString() {
-    return String.format(
-            "User[id=%d, firstName=%s, lastName=%s, password=%s, mail=%s, phone=%s, profileImageUrl=%s]",
-            id, firstName, lastName, password, mail, phone, profileImageUrl);
-  }
+  public ContactBusiness getContactBusiness() { return contactBusiness; }
 
+  public void setContactBusiness(ContactBusiness contactBusiness) { this.contactBusiness = contactBusiness; }
+
+  @Override
+  public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", password='" + password + '\'' +
+            ", mail='" + mail + '\'' +
+            ", phone='" + phone + '\'' +
+            ", profileImageUrl='" + profileImageUrl + '\'' +
+            ", contactBusiness=" + contactBusiness +
+            '}';
+  }
 }
