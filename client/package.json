@@ -14,7 +14,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "axios": "^0.18.0",
+=======
+    "moment": "^2.21.0",
+>>>>>>> Stashed changes
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue-session": "^1.0.0",

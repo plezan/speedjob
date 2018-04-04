@@ -1,10 +1,11 @@
 import Vue from 'vue'
+import Vuetify from 'vuetify'
 import Router from 'vue-router'
+import Axios from 'axios'
 
-// import Blank from '@/components/layouts/blank'
+
 import Menu from '@/components/layouts/menu'
-
-import HelloWorld from '@/components/HelloWorld'
+import addOffers from '@/components/layouts/addOffers'
 
 Vue.use(Router)
 
@@ -12,15 +13,14 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Menu,
+      component: addOffers,
       children: [{
-        path: 'HelloWorld',
-        component: HelloWorld
+        path: 'layouts/addOffers',
+        component: addOffers
       }]
     },
     {
-      path: '*',
-      redirect: '/HelloWorld'
+    
     }
   ]
 })
