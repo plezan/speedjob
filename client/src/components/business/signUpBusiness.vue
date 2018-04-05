@@ -219,16 +219,16 @@
         ],
         streetName: '',
         streetNameRules: [
-          v => !!v || 'L\'adresse est obligatoire',
+          v => !!v || 'L\'adresse est obligatoire'
         ],
         streetNumber: '',
         streetNumberRules: [
-          v => !!v || 'Le numéro de rue est obligatoire',
+          v => !!v || 'Le numéro de rue est obligatoire'
         ],
         postalCode: '',
         postalCodeRules: [
           v => !!v || 'Le code postal est obligatoire',
-          v => /^([0-9]){5}$/.test(v) || 'Le code postal est invalide',
+          v => /^([0-9]){5}$/.test(v) || 'Le code postal est invalide'
         ],
         city: '',
         cityRules: [

@@ -19,5 +19,4 @@ export default {
     font-family 'Intro Inline'
     src url('assets/typo/Intro_Inline.otf')
 
-
 </style>
