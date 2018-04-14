@@ -282,7 +282,7 @@
           }
 
           var xhr = new XMLHttpRequest()
-          xhr.open('POST', 'localhost/server/entreprise')
+          xhr.open('POST', 'localhost/server/SignUpBusiness')
           xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
           xhr.send(JSON.stringify(data))
         }
