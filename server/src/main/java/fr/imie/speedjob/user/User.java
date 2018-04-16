@@ -1,9 +1,13 @@
 package fr.imie.speedjob.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fr.imie.speedjob.competence.Competence;
 import fr.imie.speedjob.contactBusiness.ContactBusiness;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class User {
@@ -14,28 +18,47 @@ public class User {
   @Column(nullable = false)
   private String firstName;
 
-		@Column(nullable = false)
-		private String lastName;
+  @Column(nullable = false)
+  private String lastName;
 
-		@Column(nullable = false)
+  @Column(nullable = false)
   private String password;
 
-		@Column(nullable = false)
-		private String mail;
+  @Column(nullable = false)
+  private String mail;
 
-		@Column(length = 12)
-		private String phone;
+  @Column(length = 12)
+  private String phone;
 
-		@Column(unique = true)
+  @Column(unique = true)
   private String profileImageUrl;
 
-		@OneToOne(cascade = CascadeType.ALL)
+  @Column()
+  @ColumnDefault("")
+  private String presentation;
+
+  @Column()
+  private String cv;
+
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name =  "contactBusiness_id")
   @JsonIgnoreProperties("user")
-		private ContactBusiness contactBusiness;
+  private ContactBusiness contactBusiness;
 
-		public User() {}
+  @ManyToMany(mappedBy = "userCompetences")
+  @JsonIgnoreProperties("userCompetences")
+  private List<Competence> competences = new ArrayList<>();
 
+  public User() {}
+
+  public User(String firstName, String lastName, String password, String mail, String phone, String cv) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.password = password;
+    this.mail = mail;
+    this.phone = phone;
+    this.cv = cv;
+  }
   public User(String firstName, String lastName, String password, String mail) {
     this.firstName = firstName;
     this.lastName = lastName;
@@ -59,11 +82,11 @@ public class User {
     this.firstName = firstName;
   }
 
-		public String getLastName() { return lastName;	}
+  public String getLastName() { return lastName;	}
 
-		public void setLastName(String lastName) { this.lastName = lastName;	}
+  public void setLastName(String lastName) { this.lastName = lastName;	}
 
-		public String getPassword() {
+  public String getPassword() {
     return password;
   }
 
@@ -71,25 +94,37 @@ public class User {
     this.password = password;
   }
 
-		public String getMail() {	return mail;	}
+  public String getMail() {	return mail;	}
 
-		public void setMail(String mail) {	this.mail = mail; }
+  public void setMail(String mail) {	this.mail = mail; }
 
-		public String getPhone() { return phone; }
+  public String getPhone() { return phone; }
 
-		public void setPhone(String phone) { this.phone = phone; }
+  public void setPhone(String phone) { this.phone = phone; }
 
-		public String getProfileImageUrl() {
+  public String getCv() { return cv; }
+
+  public void setCv(String cv) { this.cv = cv; }
+
+  public void setPresentation(String presentation) { this.presentation = presentation; }
+
+  public String getPresentation() { return this.presentation; }
+
+  public String getProfileImageUrl() {
 				return profileImageUrl;
 		}
 
-		public void setProfileImageUrl(String profileImageUrl) {
+  public void setProfileImageUrl(String profileImageUrl) {
 				this.profileImageUrl = profileImageUrl;
 		}
 
   public ContactBusiness getContactBusiness() { return contactBusiness; }
 
   public void setContactBusiness(ContactBusiness contactBusiness) { this.contactBusiness = contactBusiness; }
+
+  public void setCompetences(List<Competence> competences) { this.competences = competences; }
+
+  public List<Competence> getCompetences() { return competences; }
 
   @Override
   public String toString() {
@@ -100,6 +135,8 @@ public class User {
             ", password='" + password + '\'' +
             ", mail='" + mail + '\'' +
             ", phone='" + phone + '\'' +
+            ", cv='" + cv + '\'' +
+            ", presentation='" + presentation + '\'' +
             ", profileImageUrl='" + profileImageUrl + '\'' +
             ", contactBusiness=" + contactBusiness +
             '}';
