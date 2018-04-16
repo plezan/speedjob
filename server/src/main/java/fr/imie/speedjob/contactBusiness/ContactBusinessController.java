@@ -44,7 +44,7 @@ public class ContactBusinessController {
     JSONObject result = new JSONObject();
     User user = userRepository.findById(userId);
     ContactBusiness contactBusiness = new ContactBusiness(job);
-    if (user != null) {
+    if (user != null && user.getStudent() == null) {
       contactBusiness.setUser(user);
       contactBusinessRepository.save(contactBusiness);
       user.setContactBusiness(contactBusiness);

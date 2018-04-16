@@ -1,13 +1,10 @@
 package fr.imie.speedjob.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fr.imie.speedjob.competence.Competence;
 import fr.imie.speedjob.contactBusiness.ContactBusiness;
-import org.hibernate.annotations.ColumnDefault;
+import fr.imie.speedjob.student.Student;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class User {
@@ -45,9 +42,10 @@ public class User {
   @JsonIgnoreProperties("user")
   private ContactBusiness contactBusiness;
 
-  @ManyToMany(mappedBy = "userCompetences")
-  @JsonIgnoreProperties("userCompetences")
-  private List<Competence> competences = new ArrayList<>();
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name =  "student_id")
+  @JsonIgnoreProperties("user")
+  private Student student;
 
   public User() {}
 
@@ -122,9 +120,13 @@ public class User {
 
   public void setContactBusiness(ContactBusiness contactBusiness) { this.contactBusiness = contactBusiness; }
 
-  public void setCompetences(List<Competence> competences) { this.competences = competences; }
+  public Student getStudent() {
+    return student;
+  }
 
-  public List<Competence> getCompetences() { return competences; }
+  public void setStudent(Student student) {
+    this.student = student;
+  }
 
   @Override
   public String toString() {
