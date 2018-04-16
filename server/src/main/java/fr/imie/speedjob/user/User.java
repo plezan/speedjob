@@ -31,7 +31,6 @@ public class User {
   private String profileImageUrl;
 
   @Column()
-  @ColumnDefault("")
   private String presentation;
 
   @Column()

@@ -3,7 +3,9 @@ package fr.imie.speedjob;
 import fr.imie.speedjob.address.Address;
 import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
 import fr.imie.speedjob.business.Business;
+import fr.imie.speedjob.competence.Competence;
 import fr.imie.speedjob.contactBusiness.ContactBusiness;
+import fr.imie.speedjob.student.Student;
 import fr.imie.speedjob.user.User;
 import fr.imie.speedjob.user.UserRepository;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -38,6 +41,25 @@ public class SpeedjobApplication implements CommandLineRunner {
   @Override
   @Transactional
   public void run(String... strings) throws Exception {
+		  // TODO
+    User user = new User(
+            "admin",
+            "inistrateur",
+            bCryptPasswordEncoder().encode("root"),
+            "admin@imie.fr"
+    );
+
+    Student student = new Student(
+            new Date(1996, 1, 1),
+            true,
+            false,
+            "",
+            "",
+            user);
+
+    Competence competence = new Competence();
+    competence.setLevel(3);
+    competence.setName("Spring boot");
     // Save a contact with couple of agencies
     /*Address address1 = new Address("Rue du test", "13B", "35999");
     Address address2 = new Address("Impasse de la sérialisation", "67", "35000");

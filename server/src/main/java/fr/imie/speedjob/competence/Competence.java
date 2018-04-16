@@ -18,18 +18,17 @@ public class Competence {
     @Column(nullable = false)
     private Integer level;
 
-    @ManyToMany(cascade = {
-                                CascadeType.PERSIST,
-                                CascadeType.MERGE
-                            })
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "student_competence",
             joinColumns = @JoinColumn(
-                    name = "comptence_id",
+                    name = "competence_id",
                     referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "student_id",
                     referencedColumnName = "id"))
-    @JsonIgnoreProperties("userCompetences")
+    @JsonIgnoreProperties("competences")
     private List<User> userCompetences;
 
     public void setId(Long id) { this.id = id; }

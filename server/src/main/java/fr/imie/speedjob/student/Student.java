@@ -1,10 +1,12 @@
 package fr.imie.speedjob.student;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fr.imie.speedjob.competence.Competence;
 import fr.imie.speedjob.user.User;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Student {
@@ -30,6 +32,10 @@ public class Student {
   @OneToOne(mappedBy = "student")
   @JsonIgnoreProperties("student")
   private User user;
+
+  @ManyToMany(mappedBy = "userCompetences")
+  @JsonIgnoreProperties("userCompetences")
+  private List<Competence> competences;
 
   public Student() {}
 
@@ -104,6 +110,14 @@ public class Student {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public List<Competence> getCompetences() {
+    return competences;
+  }
+
+  public void setCompetences(List<Competence> competences) {
+    this.competences = competences;
   }
 
   @Override
