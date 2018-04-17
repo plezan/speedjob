@@ -2,7 +2,10 @@ package fr.imie.speedjob.user;
 
 import fr.imie.speedjob.SpeedjobApplication;
 import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
+import fr.imie.speedjob.competence.Competence;
+import fr.imie.speedjob.competence.CompetenceRepository;
 import fr.imie.speedjob.contactBusiness.ContactBusiness;
+import jdk.nashorn.internal.parser.JSONParser;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +17,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+import javax.validation.constraints.Null;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+@Transactional
+@CrossOrigin
 @RestController
 @RequestMapping("/users")
 class UserController {
@@ -30,11 +42,14 @@ class UserController {
 
   @Autowired
   private UserRepository userRepository;
+  private CompetenceRepository competenceRepository;
   private BCryptPasswordEncoder bCryptPasswordEncoder;
-		private String profileImagePath;
+  private String profileImagePath;
+  private String cvFilePath;
 
-  public UserController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+  public UserController(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, CompetenceRepository competenceRepository) {
     this.userRepository = userRepository;
+    this.competenceRepository = competenceRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     final Properties properties = new Properties();
     try {
@@ -42,8 +57,10 @@ class UserController {
       InputStream is = classloader.getResourceAsStream("config.properties");
       properties.load(is);
       profileImagePath = properties.getProperty("config.path.profileImages");
+      cvFilePath = properties.getProperty("config.path.cvFile");
     } catch (Exception e) {
       profileImagePath = null;
+      cvFilePath = null;
       e.printStackTrace();
     }
   }
@@ -101,6 +118,11 @@ class UserController {
     }
   }
 
+  @GetMapping(value = "/user")
+  public User getUser(@RequestParam Long id) {
+      return userRepository.findById(id);
+  }
+
   /*
   POST
    */
@@ -113,9 +135,9 @@ class UserController {
     if (userRepository.countByMail(mail) == 0) {
 						User user = new User(
 						        firstName,
-              lastName,
-              bCryptPasswordEncoder.encode(password),
-              mail);
+                                lastName,
+                                bCryptPasswordEncoder.encode(password),
+                                mail);
 						userRepository.save(user);
 						result.put("status", "success");
 						result.put("userId", user.getId());
@@ -174,6 +196,47 @@ class UserController {
 				}
 		}
 
+		@PutMapping(value = "/updateUser")
+        public @ResponseBody User updateUser(@RequestBody User user) {
+		    User userFound = userRepository.findById(user.getId());
+		    if (userFound != null) {
+		        user.setPassword(userFound.getPassword());
+                userRepository.save(user);
+                userFound = userRepository.findById(user.getId());
+		        return userFound;
+            } else {
+		        return null;
+            }
+        }
+
+        @PutMapping(value = "/updateCv")
+        public @ResponseBody User updateCv(@RequestParam Long id, @RequestBody MultipartFile file) {
+            User userFound = userRepository.findById(id);
+            if (userFound != null) {
+                String firstName = userFound.getFirstName();
+                String lastName = userFound.getLastName();
+                String[] filenameDotParts = file.getOriginalFilename().split("\\.");
+                String fileName = firstName+"_"+lastName+"_cv."+filenameDotParts[filenameDotParts.length-1];
+                try {
+                    if (!file.isEmpty()) {
+
+                        InputStream is = file.getInputStream();
+
+                        Files.copy(is, Paths.get(cvFilePath + fileName),
+                                StandardCopyOption.REPLACE_EXISTING);
+
+                    }
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+                userFound.setCv("http://localhost/files/cvFiles/"+fileName);
+                userRepository.save(userFound);
+                return userFound;
+            } else {
+                return null;
+            }
+        }
+
 		/*
 		Private local functions
 		 */
@@ -193,4 +256,19 @@ class UserController {
       file.delete();
     }
   }
+    private boolean cvFileExists(String firstName, String lastName) {
+        File dir = new File(cvFilePath);
+        File[] matches = dir.listFiles(((dir1, name) ->
+                name.startsWith(firstName+"_"+lastName+"_cv")));
+        return matches.length > 0;
+    }
+
+    private void deleteCvFile(String firstName, String lastName) {
+        File dir = new File(cvFilePath);
+        File[] matches = dir.listFiles(((dir1, name) ->
+                name.startsWith(firstName+"_"+lastName+"_cv")));
+        for (File file : matches) {
+            file.delete();
+        }
+    }
 }

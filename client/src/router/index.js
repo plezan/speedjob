@@ -1,11 +1,12 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
 import Router from 'vue-router'
-import Axios from 'axios'
 
-
+// import Blank from '@/components/layouts/blank'
 import Menu from '@/components/layouts/menu'
-import addOffers from '@/components/layouts/addOffers'
+import StudentHome from '@/components/student/StudentHome'
+import StudentProfil from '@/components/student/StudentProfil'
+
+import HelloWorld from '@/components/HelloWorld'
 
 Vue.use(Router)
 
@@ -13,14 +14,30 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: addOffers,
+      component: Menu,
       children: [{
-        path: 'layouts/addOffers',
-        component: addOffers
+        path: 'HelloWorld',
+        component: HelloWorld
       }]
     },
     {
-    
+      path: '/',
+      component: Menu,
+      children: [
+        {
+          path: 'student/home',
+          component: StudentHome
+        },
+        {
+          path: 'student/profil',
+          component: StudentProfil
+        }
+      ]
+    },
+
+    {
+      path: '*',
+      redirect: '/HelloWorld'
     }
   ]
 })

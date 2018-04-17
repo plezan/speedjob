@@ -28,7 +28,6 @@
     <v-toolbar app fixed clipped-left>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>SpeedJob</v-toolbar-title>
-      <div class="notifications" >Notifications </div>
     </v-toolbar>
     <v-content>
       <v-container fluid fill-height>
@@ -50,11 +49,3 @@ export default {
   })
 }
 </script>
-
-<style>
-
-.notifications  {
-  float: right; 
-}
-</style> 
-
