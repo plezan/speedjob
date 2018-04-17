@@ -1,6 +1,7 @@
 package fr.imie.speedjob.competence;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
+import fr.imie.speedjob.student.Student;
 import fr.imie.speedjob.user.User;
 
 import javax.persistence.*;
@@ -18,16 +19,7 @@ public class Competence {
     @Column(nullable = false)
     private Integer level;
 
-
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "student_competence",
-            joinColumns = @JoinColumn(
-                    name = "competence_id",
-                    referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "student_id",
-                    referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "competences", targetEntity = Student.class)
     @JsonIgnoreProperties("competences")
     private List<User> userCompetences;
 

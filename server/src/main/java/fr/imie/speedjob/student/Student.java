@@ -33,7 +33,14 @@ public class Student {
   @JsonIgnoreProperties("student")
   private User user;
 
-  @ManyToMany(mappedBy = "userCompetences")
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinTable(name = "student_competence",
+          joinColumns = @JoinColumn(
+                  name = "student_id",
+                  referencedColumnName = "id"),
+          inverseJoinColumns = @JoinColumn(
+                  name = "competence_id",
+                  referencedColumnName = "id"))
   @JsonIgnoreProperties("userCompetences")
   private List<Competence> competences;
 
