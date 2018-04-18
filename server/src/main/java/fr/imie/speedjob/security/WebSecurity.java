@@ -18,6 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static fr.imie.speedjob.security.SecurityConstants.SIGN_UP_URL;
 
+@Configuration
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
   private UserDetailsService userDetailsService;
@@ -55,7 +56,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     config.addAllowedOrigin("*");
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
-    source.registerCorsConfiguration("*//**", config);
+    source.registerCorsConfiguration("/**", config);
     return new CorsFilter(source);
  }
 }

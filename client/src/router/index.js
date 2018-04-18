@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import Blank from '@/components/layouts/blank'
+import Blank from '@/components/layouts/blank'
+import Login from '@/components/login'
 import Menu from '@/components/layouts/menu'
 import StudentHome from '@/components/student/StudentHome'
 import StudentProfil from '@/components/student/StudentProfil'
@@ -18,6 +19,14 @@ export default new Router({
       children: [{
         path: 'HelloWorld',
         component: HelloWorld
+      }]
+    },
+    {
+      path: '/',
+      component: Blank,
+      children: [{
+        path: 'login',
+        component: Login
       }]
     },
     {
