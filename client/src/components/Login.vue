@@ -73,8 +73,8 @@ export default {
           password: this.password
         }
       ).then((response) => {
-        let jwt = response.headers.authorization
-        console.log(jwt)
+        this.$session.set('jwt', response.headers.authorization)
+        console.log(this.$session.get('jwt'))
       })
 
       return false
