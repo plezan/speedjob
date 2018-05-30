@@ -77,9 +77,8 @@
                       autocomplete
                       :loading="loadingBusiness"
                       cache-items
-                      :items="businesses"
+                      :items="businesses.map(business => business.name)"
                       :rules="[() => businessName.length > 0 || 'La raison sociale est obligatoire']"
-                      :search-input.sync="searchBusiness"
                       v-model="businessName"
                     ></v-select>
                     <v-text-field
@@ -166,15 +165,23 @@
 
 <script>
   import PictureInput from 'vue-picture-input'
+  import {getAllBusinesses} from "../api";
 
   export default {
     components: {
       PictureInput
     },
-    data: function () {
+    beforeCreate () {
+      getAllBusinesses()
+        .then((businesses) => {
+          this.businesses = businesses;
+        });
+    },
+    data () {
       return {
         loadingBusiness: false,
         valid: false,
+        businesses: [],
         firstName: '',
         firstNameRules: [
           v => !!v || 'Le prénom est obligatoire',
@@ -240,51 +247,29 @@
       }
     },
     watch: {
-      searchBusiness (val) {
-        val && val.length > 1 && this.searchBusinessAsync(val)
+      canSearchBusiness (val) {
+        console.log(val);
+        val && val.length > 1 && this.searchBusiness(val);
       }
     },
     methods: {
       onChangeImage (image) {
-        console.log('New picture selected!')
+        console.log('New picture selected!');
         if (image) {
-          console.log('Picture loaded.')
-          this.image = image
-          console.log(image)
+          console.log('Picture loaded.');
+          this.image = image;
+          console.log(image);
         } else {
-          console.log('FileReader API not supported: use the <form>, Luke!')
+          console.log('FileReader API not supported: use the <form>, Luke!');
         }
       },
-      searchBusinessAsync (v) {
-        this.loadingBusiness = true
-        this.$http.get('/back/businesses').then(console.log('ok'), console.log('ko'))
+      searchBusiness (v) {
+        console.log(v);
+        return this.businesses.map(business => business.name.includes(v));
       },
       submit: function (event) {
-        var inputs = document.getElementsByClassName('oblg')
-        var isfilled = true
-        for (var i = 0; i < inputs.length; i++) {
-          if (inputs[i].value === '') {
-            isfilled = false
-          }
-        }
-        if (!isfilled) {
-          this.errormessage = 'Vous devez remplir tous les champs obligatoires'
-          document.getElementById('errormessage').style.visibility = 'visible'
-        } else if (document.getElementById('password').value !== document.getElementById('password2').value) {
-          this.errormessage = 'Vos mot de passe ne correspondent pas'
-          document.getElementById('errormessage').style.visibility = 'visible'
-        } else {
-          inputs = document.getElementsByTagName('input')
-          var data = {}
+        if (this.$refs.form.validate()) {
 
-          for (i = 0; i < inputs.length; i++) {
-            data[inputs[i].id] = inputs[i].name
-          }
-
-          var xhr = new XMLHttpRequest()
-          xhr.open('POST', 'localhost/server/SignUpBusiness')
-          xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8')
-          xhr.send(JSON.stringify(data))
         }
       }
     }

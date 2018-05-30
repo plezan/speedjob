@@ -5,7 +5,7 @@ import Blank from '@/components/layouts/blank'
 // import Menu from '@/components/layouts/menu'
 
 // import HelloWorld from '@/components/HelloWorld'
-import SignUpBusiness from '@/components/business/signUpBusiness'
+import SignUpBusiness from '@/components/business/views/signUpBusiness'
 
 Vue.use(Router)
 

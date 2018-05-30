@@ -25,7 +25,7 @@ public class BusinessController {
    */
 
   // All businesses
-  @GetMapping(value = "/", produces = "application/json")
+  @GetMapping(produces = "application/json")
   public List<Business> findContactsBusiness() {
     return businessRepository.findAll();
   }
