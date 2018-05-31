@@ -1,3 +1,5 @@
+USE speedjob;
+
 INSERT INTO business
   VALUES
     (1, 'Testeur d\'apis', 'Société qui a pour désir de tester des apis, voilà.', 'APIzTestz', '0231564587', '123456789', true, NULL),

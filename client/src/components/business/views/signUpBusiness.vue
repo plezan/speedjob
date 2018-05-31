@@ -1,8 +1,11 @@
 <template>
   <v-container>
+
     <v-layout row wrap>
       <v-flex md10 offset-md1>
+
         <v-card class="elevation-2 mb-5">
+
           <v-parallax src="https://wallpapersite.com/images/wallpapers/material-design-1920x1200-geometric-stock-dark-black-hd-10125.jpg" height="300">
             <v-card-title primary-title>
               <div class="mx-auto">
@@ -13,43 +16,52 @@
           </v-parallax>
 
           <v-card class="elevation-12">
+
             <v-card-title>
               <div class="headline mx-auto">INFORMATIONS</div>
             </v-card-title>
+
             <v-card-text>
               <v-form v-model="valid" ref="form" lazy-validation>
+
                 <v-layout row wrap align-baseline>
                   <v-flex xs12 sm4 offset-sm1>
+
                     <v-text-field
                       name="lastName"
                       label="Nom"
                       :rules="lastNameRules"
                       v-model="lastName"
                     ></v-text-field>
+
                     <v-text-field
                       name="firstName"
                       label="Prénom"
                       :rules="firstNameRules"
                       v-model="firstName"
                     ></v-text-field>
+
                     <v-text-field
                       name="mail"
                       label="Mail"
                       :rules="mailRules"
                       v-model="mail"
                     ></v-text-field>
+
                     <v-text-field
                       name="phone"
                       label="Numéro de téléphone"
                       :rules="phoneRules"
                       v-model="phone"
                     ></v-text-field>
+
                     <v-text-field
                       name="job"
                       label="Poste / fonction dans l'entreprise"
                       :rules="jobRules"
                       v-model="job"
                     ></v-text-field>
+
                     <v-text-field
                       name="password"
                       label="Mot de passe"
@@ -62,6 +74,7 @@
                       :type="passwordHide ? 'password' : 'text'"
                       counter
                     ></v-text-field>
+
                     <v-text-field
                       name="password"
                       label="Confirmez votre mot de passe"
@@ -70,8 +83,10 @@
                       min="6"
                       :type="'password'"
                     ></v-text-field>
+
                   </v-flex>
                   <v-flex xs12 sm4 offset-sm2>
+
                     <v-select
                       label="Raison sociale"
                       autocomplete
@@ -80,45 +95,34 @@
                       :items="businesses.map(business => business.name)"
                       :rules="[() => businessName.length > 0 || 'La raison sociale est obligatoire']"
                       v-model="businessName"
+                      @keyup.enter="onChangeBusinessName"
+                      @blur="onChangeBusinessName"
                     ></v-select>
-                    <v-text-field
-                      name="streetName"
-                      label="Adresse : rue, impasse..."
-                      :rules="streetNameRules"
-                      v-model="streetName"
-                    ></v-text-field>
-                    <v-layout row wrap>
-                      <v-flex xs6>
-                        <v-text-field
-                          name="postalCode"
-                          label="Code Postal"
-                          :rules="postalCodeRules"
-                          v-model="postalCode"
-                        ></v-text-field>
-                      </v-flex>
-                      <v-flex xs6>
-                        <v-text-field
-                          name="city"
-                          label="Ville"
-                          :rules="cityRules"
-                          v-model="city"
-                        ></v-text-field>
-                      </v-flex>
-                    </v-layout>
+
                     <v-text-field
                       name="businessPhone"
                       label="Téléphone de la société"
                       :rules="phoneRules"
-                      v-model="businessPhone"
+                      :value="businessPhoneWatched"
                     ></v-text-field>
+
                     <v-text-field
-                      name="businessMail"
-                      label="Mail de la société"
-                      :rules="mailRules"
-                      v-model="businessMail"
+                      name="siret"
+                      label="SIREN - SIRET - RCS"
+                      :rules="siretRules"
+                      v-model="siret"
                     ></v-text-field>
+
+                    <v-text-field
+                      name="businessWebsiteUrl"
+                      label="Website"
+                      :rules="businessWebsiteUrlRules"
+                      v-model="businessWebsiteUrl"
+                    ></v-text-field>
+
                     <v-layout row wrap>
                       <v-flex xs6 offset-xs3>
+
                         <div class="input-picture">
                           <picture-input
                             ref="pictureInput"
@@ -137,10 +141,12 @@
                             }">
                           </picture-input>
                         </div>
+
                       </v-flex>
                     </v-layout>
                   </v-flex>
                 </v-layout>
+
                 <v-btn
                   @click="submit"
                   fab
@@ -154,6 +160,7 @@
                     send
                   </v-icon>
                 </v-btn>
+
               </v-form>
             </v-card-text>
           </v-card>
@@ -224,13 +231,13 @@
           v => !!v || 'La raison sociale est obligatoire',
           v => (v && v.length <= 30) || 'La raison sociale doit contenir moins de 30 caractères'
         ],
-        streetName: '',
-        streetNameRules: [
-          v => !!v || 'L\'adresse est obligatoire'
+        siret: '',
+        siretRules: [
+          v => /^((RCS )?([0-9]{3} ){2}[0-9]{3}$|^([0-9]{3} ){3}[0-9]{5})|\s*$/.test(v) || 'SIREN/SIRET/RCS non valide'
         ],
-        streetNumber: '',
-        streetNumberRules: [
-          v => !!v || 'Le numéro de rue est obligatoire'
+        businessWebsiteUrl: '',
+        businessWebsiteUrlRules: [
+          v => /^((http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?)|\s*$/.test(v) || 'Adresse web incorrecte'
         ],
         postalCode: '',
         postalCodeRules: [
@@ -242,14 +249,12 @@
           v => !!v || 'La ville est obligatoire'
         ],
         businessPhone: '',
-        businessMail: '',
         image: null
       }
     },
-    watch: {
-      canSearchBusiness (val) {
-        console.log(val);
-        val && val.length > 1 && this.searchBusiness(val);
+    computed: {
+      businessPhoneWatched: function () {
+        return this.businessPhone;
       }
     },
     methods: {
@@ -263,9 +268,17 @@
           console.log('FileReader API not supported: use the <form>, Luke!');
         }
       },
-      searchBusiness (v) {
-        console.log(v);
-        return this.businesses.map(business => business.name.includes(v));
+      onChangeBusinessName (event) {
+        setTimeout(() => {
+          for (let i in this.businesses) {
+            if (this.businesses[i].name === this.businessName) {
+              console.log(this.businesses[i]);
+              this.businessPhone = this.businesses[i].phone;
+              this.siret = this.businesses[i].siret;
+              this.businessWebsiteUrl = this.businesses[i].websiteUrl;
+            }
+          }
+        }, 250);
       },
       submit: function (event) {
         if (this.$refs.form.validate()) {
