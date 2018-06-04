@@ -11,6 +11,9 @@ export default {
 </script>
 
 <style lang="stylus">
+  @import './styl/alert.styl'
+  @import './styl/card.styl'
+
   @font-face
     font-family 'Intro'
     src url('assets/typo/Intro.otf')

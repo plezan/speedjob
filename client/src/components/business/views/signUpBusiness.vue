@@ -1,173 +1,184 @@
 <template>
-  <v-container>
+  <div>
+    <v-alert
+      v-model="alert"
+      :type="alertStatus"
+      transition="slide-x-transition"
+      dismissible
+    >
+      {{ alertMessage }}
+    </v-alert>
 
-    <v-layout row wrap>
-      <v-flex md10 offset-md1>
+    <v-container>
 
-        <v-card class="elevation-2 mb-5">
+      <v-layout row wrap>
+        <v-flex >
 
-          <v-parallax src="https://wallpapersite.com/images/wallpapers/material-design-1920x1200-geometric-stock-dark-black-hd-10125.jpg" height="300">
-            <v-card-title primary-title>
-              <div class="mx-auto">
-                <div class="display-3 intro-inline ma-4">SpeedJob</div>
-                <div class="title intro ma-2">Plateforme d'embauche mettant en relation les entreprises et l'école du numérique IMIE</div>
-              </div>
-            </v-card-title>
-          </v-parallax>
+          <v-card class="elevation-2 mb-5" dark tile>
 
-          <v-card class="elevation-12">
+            <v-parallax src="https://wallpapersite.com/images/wallpapers/material-design-1920x1200-geometric-stock-dark-black-hd-10125.jpg" height="300">
+              <v-card-title primary-title>
+                <div class="mx-auto">
+                  <div class="display-3 intro-inline ma-4">SpeedJob</div>
+                  <div class="title intro ma-2">Plateforme d'embauche mettant en relation les entreprises et l'école du numérique IMIE</div>
+                </div>
+              </v-card-title>
+            </v-parallax>
 
-            <v-card-title>
-              <div class="headline mx-auto">INFORMATIONS</div>
-            </v-card-title>
+            <v-card class="elevation-12">
 
-            <v-card-text>
-              <v-form v-model="valid" ref="form" lazy-validation>
+              <v-card-title>
+                <div class="headline mx-auto">INFORMATIONS</div>
+              </v-card-title>
 
-                <v-layout row wrap align-baseline>
-                  <v-flex xs12 sm4 offset-sm1>
+              <v-card-text>
+                <v-form v-model="valid" ref="form" lazy-validation>
 
-                    <v-text-field
-                      name="lastName"
-                      label="Nom"
-                      :rules="lastNameRules"
-                      v-model="lastName"
-                    ></v-text-field>
+                  <v-layout row wrap align-baseline>
+                    <v-flex xs12 sm4 offset-sm1>
 
-                    <v-text-field
-                      name="firstName"
-                      label="Prénom"
-                      :rules="firstNameRules"
-                      v-model="firstName"
-                    ></v-text-field>
+                      <v-text-field
+                        name="lastName"
+                        label="Nom"
+                        :rules="lastNameRules"
+                        v-model="lastName"
+                      ></v-text-field>
 
-                    <v-text-field
-                      name="mail"
-                      label="Mail"
-                      :rules="mailRules"
-                      v-model="mail"
-                    ></v-text-field>
+                      <v-text-field
+                        name="firstName"
+                        label="Prénom"
+                        :rules="firstNameRules"
+                        v-model="firstName"
+                      ></v-text-field>
 
-                    <v-text-field
-                      name="phone"
-                      label="Numéro de téléphone"
-                      :rules="phoneRules"
-                      v-model="phone"
-                    ></v-text-field>
+                      <v-text-field
+                        name="mail"
+                        label="Mail"
+                        :rules="mailRules"
+                        v-model="mail"
+                      ></v-text-field>
 
-                    <v-text-field
-                      name="job"
-                      label="Poste / fonction dans l'entreprise"
-                      :rules="jobRules"
-                      v-model="job"
-                    ></v-text-field>
+                      <v-text-field
+                        name="phone"
+                        label="Numéro de téléphone"
+                        :rules="phoneRules"
+                        v-model="phone"
+                      ></v-text-field>
 
-                    <v-text-field
-                      name="password"
-                      label="Mot de passe"
-                      hint="Au moins 6 caractères"
-                      :rules="passwordRules"
-                      v-model="password"
-                      min="6"
-                      :append-icon="passwordHide ? 'visibility' : 'visibility_off'"
-                      :append-icon-cb="() => (passwordHide = !passwordHide)"
-                      :type="passwordHide ? 'password' : 'text'"
-                      counter
-                    ></v-text-field>
+                      <v-text-field
+                        name="job"
+                        label="Poste / fonction dans l'entreprise"
+                        :rules="jobRules"
+                        v-model="job"
+                      ></v-text-field>
 
-                    <v-text-field
-                      name="password"
-                      label="Confirmez votre mot de passe"
-                      :rules="passwordRepetitionRules"
-                      v-model="passwordRepetition"
-                      min="6"
-                      :type="'password'"
-                    ></v-text-field>
+                      <v-text-field
+                        name="password"
+                        label="Mot de passe"
+                        hint="Au moins 6 caractères"
+                        :rules="passwordRules"
+                        v-model="password"
+                        min="6"
+                        :append-icon="passwordHide ? 'visibility' : 'visibility_off'"
+                        :append-icon-cb="() => (passwordHide = !passwordHide)"
+                        :type="passwordHide ? 'password' : 'text'"
+                        counter
+                      ></v-text-field>
 
-                  </v-flex>
-                  <v-flex xs12 sm4 offset-sm2>
+                      <v-text-field
+                        name="password"
+                        label="Confirmez votre mot de passe"
+                        :rules="passwordRepetitionRules"
+                        v-model="passwordRepetition"
+                        min="6"
+                        :type="'password'"
+                      ></v-text-field>
 
-                    <v-select
-                      label="Raison sociale"
-                      autocomplete
-                      :loading="loadingBusiness"
-                      cache-items
-                      :items="businesses.map(business => business.name)"
-                      :rules="[() => businessName.length > 0 || 'La raison sociale est obligatoire']"
-                      v-model="businessName"
-                      @keyup.enter="onChangeBusinessName"
-                      @blur="onChangeBusinessName"
-                    ></v-select>
+                    </v-flex>
+                    <v-flex xs12 sm4 offset-sm2>
 
-                    <v-text-field
-                      name="businessPhone"
-                      label="Téléphone de la société"
-                      :rules="phoneRules"
-                      :value="businessPhoneWatched"
-                    ></v-text-field>
+                      <v-select
+                        label="Raison sociale"
+                        autocomplete
+                        :loading="loadingBusiness"
+                        cache-items
+                        :items="businesses.map(business => business.name)"
+                        :rules="[() => businessName.length > 0 || 'La raison sociale est obligatoire']"
+                        v-model="businessName"
+                        @keyup.enter="onChangeBusinessName"
+                        @blur="onChangeBusinessName"
+                      ></v-select>
 
-                    <v-text-field
-                      name="siret"
-                      label="SIREN - SIRET - RCS"
-                      :rules="siretRules"
-                      v-model="siret"
-                    ></v-text-field>
+                      <v-text-field
+                        name="businessPhone"
+                        label="Téléphone de la société"
+                        :rules="phoneRules"
+                        :value="businessPhoneWatched"
+                      ></v-text-field>
 
-                    <v-text-field
-                      name="businessWebsiteUrl"
-                      label="Website"
-                      :rules="businessWebsiteUrlRules"
-                      v-model="businessWebsiteUrl"
-                    ></v-text-field>
+                      <v-text-field
+                        name="siret"
+                        label="SIREN - SIRET - RCS"
+                        :rules="siretRules"
+                        v-model="siret"
+                      ></v-text-field>
 
-                    <v-layout row wrap>
-                      <v-flex xs6 offset-xs3>
+                      <v-text-field
+                        name="businessWebsiteUrl"
+                        label="Website"
+                        :rules="businessWebsiteUrlRules"
+                        v-model="businessWebsiteUrl"
+                      ></v-text-field>
 
-                        <div class="input-picture">
-                          <picture-input
-                            ref="pictureInput"
-                            @change="onChangeImage"
-                            accept="image/jpeg,image/png,image/gif,application/pdf"
-                            width="200"
-                            height="200"
-                            size="2"
-                            radius="2"
-                            margin="10"
-                            removable
-                            :zIndex="1"
-                            :customStrings="{
+                      <v-layout row wrap>
+                        <v-flex xs6 offset-xs3>
+
+                          <div class="input-picture">
+                            <picture-input
+                              ref="pictureInput"
+                              @change="onChangeImage"
+                              accept="image/jpeg,image/png,image/gif"
+                              width="200"
+                              height="200"
+                              size="2"
+                              radius="2"
+                              margin="10"
+                              removable
+                              :zIndex="1"
+                              :customStrings="{
                               drag: 'Déposez un logo',
                               remove: 'Supprimer le logo'
                             }">
-                          </picture-input>
-                        </div>
+                            </picture-input>
+                          </div>
 
-                      </v-flex>
-                    </v-layout>
-                  </v-flex>
-                </v-layout>
+                        </v-flex>
+                      </v-layout>
+                    </v-flex>
+                  </v-layout>
 
-                <v-btn
-                  @click="submit"
-                  fab
-                  large
-                  absolute
-                  right
-                  color="success"
-                  class="mt-3 mb-3 btn-validate"
-                >
-                  <v-icon>
-                    send
-                  </v-icon>
-                </v-btn>
+                  <v-btn
+                    @click="submit"
+                    fab
+                    large
+                    absolute
+                    right
+                    color="success"
+                    class="mt-3 mb-3 btn-validate"
+                  >
+                    <v-icon>
+                      send
+                    </v-icon>
+                  </v-btn>
 
-              </v-form>
-            </v-card-text>
+                </v-form>
+              </v-card-text>
+            </v-card>
           </v-card>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -178,16 +189,16 @@
     components: {
       PictureInput
     },
-    beforeCreate () {
-      getAllBusinesses()
-        .then((businesses) => {
-          this.businesses = businesses;
-        });
+    created () {
+      this.loadBusinesses();
     },
     data () {
       return {
-        loadingBusiness: false,
+        alert: false,
+        alertStatus: 'info',
+        alertMessage: '',
         valid: false,
+        loadingBusiness: false,
         businesses: [],
         firstName: '',
         firstNameRules: [
@@ -258,21 +269,35 @@
       }
     },
     methods: {
+      loadBusinesses() {
+        getAllBusinesses()
+          .then((businesses) => {
+            if (businesses && businesses.length > 0) {
+              this.businesses = businesses;
+            } else {
+              // Will continue until the server responds
+              this.alertStatus = 'error';
+              this.alertMessage = 'Le préchargement des entreprises existantes a échoué.';
+              this.alert = true;
+
+              setTimeout(() => {
+                this.loadBusinesses();
+              }, 8000);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      },
       onChangeImage (image) {
-        console.log('New picture selected!');
         if (image) {
-          console.log('Picture loaded.');
           this.image = image;
-          console.log(image);
-        } else {
-          console.log('FileReader API not supported: use the <form>, Luke!');
         }
       },
-      onChangeBusinessName (event) {
+      onChangeBusinessName () {
         setTimeout(() => {
           for (let i in this.businesses) {
             if (this.businesses[i].name === this.businessName) {
-              console.log(this.businesses[i]);
               this.businessPhone = this.businesses[i].phone;
               this.siret = this.businesses[i].siret;
               this.businessWebsiteUrl = this.businesses[i].websiteUrl;
@@ -282,6 +307,7 @@
       },
       submit: function (event) {
         if (this.$refs.form.validate()) {
+          console.log(this.image);
 
         }
       }
