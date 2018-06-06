@@ -5,9 +5,13 @@
 </template>
 
 <script>
-export default {
-  name: 'app'
-}
+  /**
+   * @vue
+   * Entry point of the app
+   */
+  export default {
+    name: 'app'
+  }
 </script>
 
 <style>

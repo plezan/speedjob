@@ -25,6 +25,12 @@ npm run e2e
 
 # run all tests
 npm test
+
+# Generate the doc
+npm run docs
+
+# Remove the docs folder and Re-generate the doc
+npm run docs-force
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
