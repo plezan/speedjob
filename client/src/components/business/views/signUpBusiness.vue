@@ -184,6 +184,7 @@
 <script>
   import PictureInput from 'vue-picture-input'
   import {getAllBusinesses} from "../api";
+  import * as regex from "../../../shared/regex";
 
   export default {
     components: {
@@ -213,12 +214,12 @@
         mail: '',
         mailRules: [
           v => !!v || 'Le mail est obligatoire',
-          v => /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'Le mail n\'est pas valide'
+          v => regex.isMailValid(v) || 'Le mail n\'est pas valide'
         ],
         phone: '',
         phoneRules: [
           v => !!v || 'Le numéro de téléphone est obligatoire',
-          v => /^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/.test(v) || 'Le numéro de téléphone n\'est pas valide'
+          v => regex.isPhoneValid(v) || 'Le numéro de téléphone n\'est pas valide'
         ],
         job: '',
         jobRules: [
@@ -244,16 +245,16 @@
         ],
         siret: '',
         siretRules: [
-          v => /^((RCS )?([0-9]{3} ){2}[0-9]{3}$|^([0-9]{3} ){3}[0-9]{5})|\s*$/.test(v) || 'SIREN/SIRET/RCS non valide'
+          v => regex.isSiretValid(v) || 'SIREN/SIRET/RCS non valide'
         ],
         businessWebsiteUrl: '',
         businessWebsiteUrlRules: [
-          v => /^((http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?)|\s*$/.test(v) || 'Adresse web incorrecte'
+          v => regex.isWebsiteUrlValid(v) || 'Adresse web incorrecte'
         ],
         postalCode: '',
         postalCodeRules: [
           v => !!v || 'Le code postal est obligatoire',
-          v => /^([0-9]){5}$/.test(v) || 'Le code postal est invalide'
+          v => regex.isFrenchPostalCodeValid(v) || 'Le code postal est invalide'
         ],
         city: '',
         cityRules: [

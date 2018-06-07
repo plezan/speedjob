@@ -1,5 +1,6 @@
-package fr.imie.speedjob.user;
+package fr.imie.speedjob.services;
 
+import fr.imie.speedjob.repositories.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-    fr.imie.speedjob.user.User user = userRepository.findByMail(mail);
+    fr.imie.speedjob.models.User user = userRepository.findByMail(mail);
     if (user == null) {
       throw new UsernameNotFoundException(mail);
     }

@@ -1,8 +1,8 @@
-package fr.imie.speedjob.user;
+package fr.imie.speedjob.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fr.imie.speedjob.contactBusiness.ContactBusiness;
-import fr.imie.speedjob.student.Student;
+import fr.imie.speedjob.models.ContactBusiness;
+import fr.imie.speedjob.models.Student;
 
 import javax.persistence.*;
 

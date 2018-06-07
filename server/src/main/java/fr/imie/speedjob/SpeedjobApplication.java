@@ -1,11 +1,6 @@
 package fr.imie.speedjob;
 
-import fr.imie.speedjob.address.Address;
-import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
-import fr.imie.speedjob.business.Business;
-import fr.imie.speedjob.contactBusiness.ContactBusiness;
-import fr.imie.speedjob.user.User;
-import fr.imie.speedjob.user.UserRepository;
+import fr.imie.speedjob.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class SpeedjobApplication implements CommandLineRunner {

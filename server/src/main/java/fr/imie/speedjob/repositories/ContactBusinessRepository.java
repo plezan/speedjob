@@ -1,5 +1,6 @@
-package fr.imie.speedjob.contactBusiness;
+package fr.imie.speedjob.repositories;
 
+import fr.imie.speedjob.models.ContactBusiness;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

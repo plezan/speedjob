@@ -1,7 +1,7 @@
-package fr.imie.speedjob.address;
+package fr.imie.speedjob.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
+import fr.imie.speedjob.models.AgencyBusiness;
 
 import javax.persistence.*;
 import java.util.List;

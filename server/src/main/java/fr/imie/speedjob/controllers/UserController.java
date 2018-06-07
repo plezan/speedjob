@@ -1,15 +1,12 @@
-package fr.imie.speedjob.user;
+package fr.imie.speedjob.controllers;
 
 import fr.imie.speedjob.SpeedjobApplication;
-import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
-import fr.imie.speedjob.contactBusiness.ContactBusiness;
+import fr.imie.speedjob.models.User;
+import fr.imie.speedjob.repositories.UserRepository;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 

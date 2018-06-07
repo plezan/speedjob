@@ -1,8 +1,8 @@
-package fr.imie.speedjob.user;
+package fr.imie.speedjob.repositories;
 
+import fr.imie.speedjob.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.sql.Blob;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {

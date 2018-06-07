@@ -1,5 +1,7 @@
-package fr.imie.speedjob.business;
+package fr.imie.speedjob.controllers;
 
+import fr.imie.speedjob.repositories.BusinessRepository;
+import fr.imie.speedjob.models.Business;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -7,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController

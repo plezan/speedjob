@@ -1,7 +1,6 @@
-package fr.imie.speedjob.student;
+package fr.imie.speedjob.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fr.imie.speedjob.user.User;
 
 import javax.persistence.*;
 import java.util.Date;

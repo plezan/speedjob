@@ -1,7 +1,9 @@
-package fr.imie.speedjob.contactBusiness;
+package fr.imie.speedjob.controllers;
 
-import fr.imie.speedjob.user.User;
-import fr.imie.speedjob.user.UserRepository;
+import fr.imie.speedjob.repositories.ContactBusinessRepository;
+import fr.imie.speedjob.models.ContactBusiness;
+import fr.imie.speedjob.models.User;
+import fr.imie.speedjob.repositories.UserRepository;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

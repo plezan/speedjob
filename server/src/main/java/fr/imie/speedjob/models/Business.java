@@ -1,7 +1,6 @@
-package fr.imie.speedjob.business;
+package fr.imie.speedjob.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
 
 import javax.persistence.*;
 import java.util.List;

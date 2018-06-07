@@ -1,9 +1,6 @@
-package fr.imie.speedjob.agencyBusiness;
+package fr.imie.speedjob.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fr.imie.speedjob.address.Address;
-import fr.imie.speedjob.business.Business;
-import fr.imie.speedjob.contactBusiness.ContactBusiness;
 
 import javax.persistence.*;
 import java.util.List;

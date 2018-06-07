@@ -1,7 +1,7 @@
 package fr.imie.speedjob.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.imie.speedjob.user.User;
+import fr.imie.speedjob.models.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;

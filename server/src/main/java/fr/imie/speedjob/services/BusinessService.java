@@ -3,18 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.imie.speedjob.signUpBusiness;
+package fr.imie.speedjob.services;
 
-import fr.imie.speedjob.address.Address;
-import fr.imie.speedjob.address.AddressRepository;
-import fr.imie.speedjob.agencyBusiness.AgencyBusiness;
-import fr.imie.speedjob.agencyBusiness.AgencyBusinessRepository;
-import fr.imie.speedjob.business.Business;
-import fr.imie.speedjob.business.BusinessRepository;
-import fr.imie.speedjob.contactBusiness.ContactBusiness;
-import fr.imie.speedjob.contactBusiness.ContactBusinessRepository;
-import fr.imie.speedjob.user.User;
-import fr.imie.speedjob.user.UserRepository;
+import com.sun.istack.internal.Nullable;
+import fr.imie.speedjob.models.Address;
+import fr.imie.speedjob.repositories.AddressRepository;
+import fr.imie.speedjob.models.AgencyBusiness;
+import fr.imie.speedjob.repositories.AgencyBusinessRepository;
+import fr.imie.speedjob.models.Business;
+import fr.imie.speedjob.repositories.BusinessRepository;
+import fr.imie.speedjob.models.ContactBusiness;
+import fr.imie.speedjob.repositories.ContactBusinessRepository;
+import fr.imie.speedjob.models.User;
+import fr.imie.speedjob.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import net.minidev.json.JSONObject;
@@ -27,11 +28,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  *
- * @author speedjob
  */
-@RestController
-@RequestMapping("/signUpBusiness")
-public class SignUpBusiness {
+public class BusinessService {
 
     @Autowired
     private AgencyBusinessRepository agencyBusinessRepository;
@@ -46,13 +44,26 @@ public class SignUpBusiness {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private String logoPath;
 
-    public SignUpBusiness(AgencyBusinessRepository agencyBusinessRepository, ContactBusinessRepository contactBusinessRepository,
-            BusinessRepository businessRepository, AddressRepository addressRepository, UserRepository userRepository) {
+    public BusinessService(AgencyBusinessRepository agencyBusinessRepository, ContactBusinessRepository contactBusinessRepository,
+                           BusinessRepository businessRepository, AddressRepository addressRepository, UserRepository userRepository) {
         this.agencyBusinessRepository = agencyBusinessRepository;
         this.contactBusinessRepository = contactBusinessRepository;
         this.businessRepository = businessRepository;
         this.addressRepository = addressRepository;
         this.userRepository = userRepository;
+    }
+
+    public Boolean saveBusiness(
+        String name,
+        @Nullable String description,
+        @Nullable String activityArea,
+        String phone,
+        String siret,
+        String websiteUrl
+    ) {
+        // Checks every attribute validity
+        if (!name.isEmpty() &&
+            )
     }
 
     @PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -81,11 +92,11 @@ public class SignUpBusiness {
             AgencyBusiness agencyBusiness = new AgencyBusiness(businessName, address, business);
             List<AgencyBusiness> listAgencyBusiness = new ArrayList<>();
             listAgencyBusiness.add(agencyBusiness);
-            
+
             business.setAgenciesBusiness(listAgencyBusiness);
             contactBusiness.setAgenciesBusiness(listAgencyBusiness);
-            
-            
+
+
             contactBusinessRepository.save(contactBusiness);
             userRepository.save(user);
             businessRepository.save(business);

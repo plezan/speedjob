@@ -1,11 +1,13 @@
-package fr.imie.speedjob.agencyBusiness;
+package fr.imie.speedjob.controllers;
 
-import fr.imie.speedjob.address.Address;
-import fr.imie.speedjob.address.AddressRepository;
-import fr.imie.speedjob.business.Business;
-import fr.imie.speedjob.business.BusinessRepository;
-import fr.imie.speedjob.contactBusiness.ContactBusiness;
-import fr.imie.speedjob.contactBusiness.ContactBusinessRepository;
+import fr.imie.speedjob.models.Address;
+import fr.imie.speedjob.repositories.AddressRepository;
+import fr.imie.speedjob.repositories.AgencyBusinessRepository;
+import fr.imie.speedjob.models.AgencyBusiness;
+import fr.imie.speedjob.models.Business;
+import fr.imie.speedjob.repositories.BusinessRepository;
+import fr.imie.speedjob.models.ContactBusiness;
+import fr.imie.speedjob.repositories.ContactBusinessRepository;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
