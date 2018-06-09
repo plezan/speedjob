@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <v-app id="app" dark>
     <v-navigation-drawer clipped fixed v-model="drawer" app>
@@ -23,7 +24,7 @@
     </v-navigation-drawer>
     <!-- header --> 
     <v-toolbar app fixed clipped-left>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon ></v-toolbar-side-icon> <!-- @click.stop="drawer = !drawer" -->
       <v-toolbar-title>SpeedJob</v-toolbar-title>
       <v-spacer></v-spacer>
       
@@ -108,7 +109,7 @@
       <v-flex xs6 sm6>
         <v-select
           label="Select"
-          :items="comp_name"
+          :items="competences"
           v-model="e7"
           multiple
           max-height="200"
@@ -153,7 +154,7 @@ export default {
        return: {
         todos: [],
         e7: [],
-        comp_name: [
+        competences: [
           'Angular2','Angular.js', 'CSS3', 'Javascript', 'Jquery',
           'HTML5', 'PHP7', 'Python', 'Java',
           'Node.js', 'C#', 'C++',
@@ -229,7 +230,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 
 .notifications  {
   float: right; 
@@ -256,11 +257,4 @@ export default {
   flex-direction: row; 
   justify-content: flex-end; 
 }
-
-
-
-
-
-
-</style> 
-
+</style>
