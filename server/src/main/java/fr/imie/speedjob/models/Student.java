@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Student {
@@ -29,6 +30,17 @@ public class Student {
   @OneToOne(mappedBy = "student")
   @JsonIgnoreProperties("student")
   private User user;
+
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinTable(name = "student_competence",
+    joinColumns = @JoinColumn(
+      name = "student_id",
+      referencedColumnName = "id"),
+    inverseJoinColumns = @JoinColumn(
+      name = "competence_id",
+      referencedColumnName = "id"))
+  @JsonIgnoreProperties("studentCompetences")
+  private List<Competence> competences;
 
   public Student() {}
 

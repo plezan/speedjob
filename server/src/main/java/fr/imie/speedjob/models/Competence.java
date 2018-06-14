@@ -19,7 +19,7 @@ public class Competence {
 
   @ManyToMany(mappedBy = "competences", targetEntity = Student.class)
   @JsonIgnoreProperties("competences")
-  private List<User> userCompetences;
+  private List<User> studentCompetences;
 
   public void setId(Long id) { this.id = id; }
 
@@ -33,8 +33,8 @@ public class Competence {
 
   public Integer getLevel() { return level; }
 
-  public void setUserCompetences(List<User> userCompetences) { this.userCompetences = userCompetences; }
+  public void setStudentCompetences(List<User> studentCompetences) { this.studentCompetences = studentCompetences; }
 
-  public List<User> getUserCompetences() { return userCompetences; }
+  public List<User> getStudentCompetences() { return studentCompetences; }
 
 }
