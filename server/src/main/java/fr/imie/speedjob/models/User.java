@@ -1,8 +1,6 @@
 package fr.imie.speedjob.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import fr.imie.speedjob.models.ContactBusiness;
-import fr.imie.speedjob.models.Student;
 
 import javax.persistence.*;
 
@@ -15,32 +13,32 @@ public class User {
   @Column(nullable = false)
   private String firstName;
 
-		@Column(nullable = false)
-		private String lastName;
+  @Column(nullable = false)
+  private String lastName;
 
-		@Column(nullable = false)
+  @Column(nullable = false)
   private String password;
 
-		@Column(nullable = false)
-		private String mail;
+  @Column(nullable = false)
+  private String mail;
 
-		@Column(length = 12)
-		private String phone;
+  @Column(length = 12)
+  private String phone;
 
-		@Column(unique = true)
-  private String profileImageUrl;
+  @Column
+  private Boolean hasProfileImage = false;
 
-		@OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name =  "contactBusiness_id")
   @JsonIgnoreProperties("user")
-		private ContactBusiness contactBusiness;
+  private ContactBusiness contactBusiness;
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name =  "student_id")
   @JsonIgnoreProperties("user")
   private Student student;
 
-		public User() {}
+  public User() {}
 
   public User(String firstName, String lastName, String password, String mail) {
     this.firstName = firstName;
@@ -65,11 +63,11 @@ public class User {
     this.firstName = firstName;
   }
 
-		public String getLastName() { return lastName;	}
+  public String getLastName() { return lastName;	}
 
-		public void setLastName(String lastName) { this.lastName = lastName;	}
+  public void setLastName(String lastName) { this.lastName = lastName;	}
 
-		public String getPassword() {
+  public String getPassword() {
     return password;
   }
 
@@ -77,21 +75,21 @@ public class User {
     this.password = password;
   }
 
-		public String getMail() {	return mail;	}
+  public String getMail() {	return mail;	}
 
-		public void setMail(String mail) {	this.mail = mail; }
+  public void setMail(String mail) {	this.mail = mail; }
 
-		public String getPhone() { return phone; }
+  public String getPhone() { return phone; }
 
-		public void setPhone(String phone) { this.phone = phone; }
+  public void setPhone(String phone) { this.phone = phone; }
 
-		public String getProfileImageUrl() {
-				return profileImageUrl;
-		}
+  public Boolean getHasProfileImage() {
+    return hasProfileImage;
+  }
 
-		public void setProfileImageUrl(String profileImageUrl) {
-				this.profileImageUrl = profileImageUrl;
-		}
+  public void setHasProfileImage(Boolean hasProfileImage) {
+    this.hasProfileImage = hasProfileImage;
+  }
 
   public ContactBusiness getContactBusiness() { return contactBusiness; }
 
@@ -108,14 +106,15 @@ public class User {
   @Override
   public String toString() {
     return "User{" +
-            "id=" + id +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", password='" + password + '\'' +
-            ", mail='" + mail + '\'' +
-            ", phone='" + phone + '\'' +
-            ", profileImageUrl='" + profileImageUrl + '\'' +
-            ", contactBusiness=" + contactBusiness +
-            '}';
+      "id=" + id +
+      ", firstName='" + firstName + '\'' +
+      ", lastName='" + lastName + '\'' +
+      ", password='" + password + '\'' +
+      ", mail='" + mail + '\'' +
+      ", phone='" + phone + '\'' +
+      ", hasProfileImage=" + hasProfileImage +
+      ", contactBusiness=" + contactBusiness +
+      ", student=" + student +
+      '}';
   }
 }

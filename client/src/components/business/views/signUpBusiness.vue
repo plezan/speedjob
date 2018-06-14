@@ -28,7 +28,7 @@
             <v-card class="elevation-12">
 
               <v-card-title>
-                <div class="headline mx-auto">INFORMATIONS</div>
+                <div class="headline mx-auto">Inscription entreprise</div>
               </v-card-title>
 
               <v-card-text>
@@ -40,6 +40,7 @@
                       <v-text-field
                         name="lastName"
                         label="Nom"
+                        suffix="*"
                         :rules="lastNameRules"
                         v-model="lastName"
                       ></v-text-field>
@@ -47,13 +48,15 @@
                       <v-text-field
                         name="firstName"
                         label="Prénom"
+                        suffix="*"
                         :rules="firstNameRules"
                         v-model="firstName"
                       ></v-text-field>
 
                       <v-text-field
                         name="mail"
-                        label="Mail"
+                        label="Email"
+                        suffix="*"
                         :rules="mailRules"
                         v-model="mail"
                       ></v-text-field>
@@ -61,13 +64,15 @@
                       <v-text-field
                         name="phone"
                         label="Numéro de téléphone"
-                        :rules="phoneRules"
+                        :error-messages="phoneRules"
+                        :rules="phoneRulesWatched"
                         v-model="phone"
                       ></v-text-field>
 
                       <v-text-field
                         name="job"
                         label="Poste / fonction dans l'entreprise"
+                        suffix="*"
                         :rules="jobRules"
                         v-model="job"
                       ></v-text-field>
@@ -75,6 +80,7 @@
                       <v-text-field
                         name="password"
                         label="Mot de passe"
+                        suffix="*"
                         hint="Au moins 6 caractères"
                         :rules="passwordRules"
                         v-model="password"
@@ -88,6 +94,7 @@
                       <v-text-field
                         name="password"
                         label="Confirmez votre mot de passe"
+                        suffix="*"
                         :rules="passwordRepetitionRules"
                         v-model="passwordRepetition"
                         min="6"
@@ -97,38 +104,82 @@
                     </v-flex>
                     <v-flex xs12 sm4 offset-sm2>
 
-                      <v-select
-                        label="Raison sociale"
-                        autocomplete
-                        :loading="loadingBusiness"
-                        cache-items
-                        :items="businesses.map(business => business.name)"
-                        :rules="[() => businessName.length > 0 || 'La raison sociale est obligatoire']"
-                        v-model="businessName"
-                        @keyup.enter="onChangeBusinessName"
-                        @blur="onChangeBusinessName"
-                      ></v-select>
 
-                      <v-text-field
-                        name="businessPhone"
-                        label="Téléphone de la société"
-                        :rules="phoneRules"
-                        :value="businessPhoneWatched"
-                      ></v-text-field>
+                      <v-tabs
+                        v-model="tabActive"
+                      >
+                        <!-- Business already existing -->
+                        <v-tab>
+                          Existante
+                        </v-tab>
+                        <v-tab-item class="business">
+                          <v-select
+                            label="Raison sociale"
+                            autocomplete
+                            :loading="loadingBusiness"
+                            :items="businesses ? businesses.map(business => business.name) : null"
+                            :rules="[() => businessName.length > 0 || 'La raison sociale est obligatoire']"
+                            v-model="businessName"
+                            @keyup.enter="onChangeExistingBusinessName"
+                            @blur="onChangeExistingBusinessName"
+                            @change=""
+                          ></v-select>
 
-                      <v-text-field
-                        name="siret"
-                        label="SIREN - SIRET - RCS"
-                        :rules="siretRules"
-                        v-model="siret"
-                      ></v-text-field>
+                          <v-text-field
+                            name="siret"
+                            label="SIREN - SIRET - RCS"
+                            :error-messages="siretRules"
+                            :rules="siretRulesWatched"
+                            v-model="siret"
+                          ></v-text-field>
 
-                      <v-text-field
-                        name="businessWebsiteUrl"
-                        label="Website"
-                        :rules="businessWebsiteUrlRules"
-                        v-model="businessWebsiteUrl"
-                      ></v-text-field>
+                          <v-text-field
+                            name="businessWebsiteUrl"
+                            label="Website"
+                            :error-messages="businessWebsiteUrlRules"
+                            :rules="businessWebsiteUrlRulesWatched"
+                            v-model="businessWebsiteUrl"
+                            hint="http://mon-site_web.com/..."
+                          ></v-text-field>
+                        </v-tab-item>
+
+                        <!-- Business will be created -->
+                        <v-tab>
+                          Nouvelle
+                        </v-tab>
+                        <v-tab-item class="business">
+                          <v-text-field
+                            label="Raison sociale"
+                            suffix="*"
+                            :error-messages="newBusinessRules"
+                            :rules="[
+                              () => businessName.length > 0 || 'La raison sociale est obligatoire',
+                              newBusinessRulesWatched
+                            ]"
+                            v-model="businessName"
+                            @change="onChangeNewBusinessName"
+                          ></v-text-field>
+
+                          <v-text-field
+                            name="siret"
+                            label="SIREN - SIRET - RCS"
+                            :error-messages="siretRules"
+                            :rules="siretRulesWatched"
+                            v-model="siret"
+                          ></v-text-field>
+
+                          <v-text-field
+                            name="businessWebsiteUrl"
+                            label="Website"
+                            :error-messages="businessWebsiteUrlRules"
+                            :rules="businessWebsiteUrlRulesWatched"
+                            v-model="businessWebsiteUrl"
+                            hint="http://mon-site_web.com/..."
+                          ></v-text-field>
+                        </v-tab-item>
+                      </v-tabs>
+
+
 
                       <v-layout row wrap>
                         <v-flex xs6 offset-xs3>
@@ -184,7 +235,7 @@
 <script>
   import PictureInput from 'vue-picture-input'
   import {getAllBusinesses} from "../api";
-  import * as regex from "../../../shared/regex";
+  import * as regex from "../../../commons/regex";
 
   export default {
     components: {
@@ -195,6 +246,7 @@
     },
     data () {
       return {
+        tabActive: null,
         alert: false,
         alertStatus: 'info',
         alertMessage: '',
@@ -217,10 +269,7 @@
           v => regex.isMailValid(v) || 'Le mail n\'est pas valide'
         ],
         phone: '',
-        phoneRules: [
-          v => !!v || 'Le numéro de téléphone est obligatoire',
-          v => regex.isPhoneValid(v) || 'Le numéro de téléphone n\'est pas valide'
-        ],
+        phoneRules: [],
         job: '',
         jobRules: [
           v => !!v || 'Le poste est obligatoire',
@@ -244,13 +293,9 @@
           v => (v && v.length <= 30) || 'La raison sociale doit contenir moins de 30 caractères'
         ],
         siret: '',
-        siretRules: [
-          v => regex.isSiretValid(v) || 'SIREN/SIRET/RCS non valide'
-        ],
+        siretRules: [],
         businessWebsiteUrl: '',
-        businessWebsiteUrlRules: [
-          v => regex.isWebsiteUrlValid(v) || 'Adresse web incorrecte'
-        ],
+        businessWebsiteUrlRules: [],
         postalCode: '',
         postalCodeRules: [
           v => !!v || 'Le code postal est obligatoire',
@@ -260,13 +305,28 @@
         cityRules: [
           v => !!v || 'La ville est obligatoire'
         ],
-        businessPhone: '',
         image: null
       }
     },
     computed: {
-      businessPhoneWatched: function () {
-        return this.businessPhone;
+      phoneRulesWatched () {
+        this.phoneRules = this.phone.length > 0 && !regex.isPhoneValid(this.phone)
+          ? ['Le numéro de téléphone n\'est pas valide.']
+          : [];
+        return true;
+      },
+      siretRulesWatched () {
+        this.siretRules = this.siret.length > 0 && !regex.isSiretValid(this.siret)
+          ? ['SIRENT/SIRET/RCS invalide.']
+          : [];
+        return [];
+      },
+      businessWebsiteUrlRulesWatched () {
+        this.businessWebsiteUrlRules = this.businessWebsiteUrl.length > 0
+          && !regex.isWebsiteUrlValid(this.businessWebsiteUrl)
+          ? ['L\'adresse web est incorrecte.']
+          : [];
+        return [];
       }
     },
     methods: {
@@ -295,16 +355,23 @@
           this.image = image;
         }
       },
-      onChangeBusinessName () {
+      onChangeExistingBusinessName () {
         setTimeout(() => {
           for (let i in this.businesses) {
             if (this.businesses[i].name === this.businessName) {
-              this.businessPhone = this.businesses[i].phone;
-              this.siret = this.businesses[i].siret;
-              this.businessWebsiteUrl = this.businesses[i].websiteUrl;
+              this.siret = this.businesses[i].siret ? this.businesses[i].siret : '';
+              this.businessWebsiteUrl = this.businesses[i].websiteUrl ? this.businesses[i].websiteUrl : '';
             }
           }
-        }, 250);
+        }, 200);
+      },
+      onChangeNewBusinessName () {
+        for (let i in this.businesses) {
+          if (this.businessName.toLowerCase() === this.businesses[i].name.toLowerCase()) {
+
+          }
+
+        }
       },
       submit: function (event) {
         if (this.$refs.form.validate()) {
@@ -317,7 +384,7 @@
 
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   td
     padding 5px
     padding-right 50px
@@ -337,15 +404,14 @@
     background-color #48b9c7
     padding 5px
 
-  @media screen and (min-width: 576px)
-    .mx-sm-20px
-      margin 200px
-
   #submit
     margin-left auto
 
   .intro-inline
     font-family 'Intro Inline'
+
+  .business
+    margin-top 20px
 
   .btn-validate
     z-index 1 !important

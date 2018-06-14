@@ -8,9 +8,12 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import static fr.imie.speedjob.security.SecurityConstants.*;
@@ -25,21 +28,35 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
   protected void doFilterInternal(HttpServletRequest request,
                                   HttpServletResponse response,
                                   FilterChain chain) throws IOException, ServletException {
-    String header = request.getHeader(HEADER_STRING);
+    String token = null;
 
-    if (header == null || !header.startsWith(TOKEN_PREFIX)) {
+    Cookie[] cookies = request.getCookies();
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if (cookie.getName().equals("token"))
+          token = cookie.getValue();
+      }
+    }
+
+    if (token == null)
+      token = request.getHeader(HEADER_STRING);
+
+    if (token != null)
+      token = URLDecoder.decode(token, "UTF-8");
+
+    if (token == null || !token.startsWith(TOKEN_PREFIX)) {
       chain.doFilter(request, response);
       return;
     }
 
-    UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+    UsernamePasswordAuthenticationToken authentication = getAuthentication(token);
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
     chain.doFilter(request, response);
   }
 
-  private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-    String token = request.getHeader(HEADER_STRING);
+  private UsernamePasswordAuthenticationToken getAuthentication(String token)
+    throws UnsupportedEncodingException {
     if (token != null) {
       // parse the token.
       String user = Jwts.parser()

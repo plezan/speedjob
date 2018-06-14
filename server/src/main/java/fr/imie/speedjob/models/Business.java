@@ -26,8 +26,11 @@ public class Business {
   @Column(length = 20)
   private String phone;
 
-  @Column(length = 14)
+  @Column(length = 20)
   private String siret;
+
+  @Column
+  private String profileImageUrl;
 
   @OneToMany(mappedBy = "business")
   @JsonIgnoreProperties("business")

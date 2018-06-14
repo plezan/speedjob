@@ -1,5 +1,5 @@
 export function isPhoneValid(phone) {
-  return /^(0|\+33)[1-9]([-. ]?[0-9]{2}){4}$/.test(phone);
+  return /^(?:(?:\+|00)33[\s.-]{0,3}(?:\(0\)[\s.-]{0,3})?|0)[1-9](?:(?:[\s.-]?\d{2}){4}|\d{2}(?:[\s.-]?\d{3}){2})$/.test(phone);
 }
 
 export function isMailValid(mail) {
@@ -7,11 +7,11 @@ export function isMailValid(mail) {
 }
 
 export function isSiretValid(siret) {
-  return /^((RCS )?([0-9]{3} ){2}[0-9]{3}$|^([0-9]{3} ){3}[0-9]{5})|\s*$/.test(siret);
+  return /^(RCS ?)?([0-9]{3} ?){2}[0-9]{3}$|^([0-9]{3} ?){3}[0-9]{5}$/.test(siret);
 }
 
 export function isWebsiteUrlValid(websiteUrl) {
-  return /^((http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?)|\s*$/.test(websiteUrl);
+  return /^((http(s)?:\/\/)[-a-zA-Z0-9:@;?&=\/%\+\.\*!'\(\),\$_\{\}\^~\[\]`#|]+)$/.test(websiteUrl);
 }
 
 export function isFrenchPostalCodeValid(postalCode) {

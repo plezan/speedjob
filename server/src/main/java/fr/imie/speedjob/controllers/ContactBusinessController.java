@@ -1,9 +1,9 @@
 package fr.imie.speedjob.controllers;
 
-import fr.imie.speedjob.repositories.ContactBusinessRepository;
 import fr.imie.speedjob.models.ContactBusiness;
 import fr.imie.speedjob.models.User;
-import fr.imie.speedjob.repositories.UserRepository;
+import fr.imie.speedjob.services.ContactBusinessService;
+import fr.imie.speedjob.services.UserService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,18 +12,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/contactsBusiness")
 public class ContactBusinessController {
   @Autowired
-  private ContactBusinessRepository contactBusinessRepository;
+  private ContactBusinessService contactBusinessService;
   @Autowired
-  private UserRepository userRepository;
+  private UserService userService;
 
-  public ContactBusinessController(ContactBusinessRepository contactBusinessRepository, UserRepository userRepository) {
-    this.contactBusinessRepository = contactBusinessRepository;
-    this.userRepository = userRepository;
+  public ContactBusinessController(ContactBusinessService contactBusinessService, UserService userService) {
+    this.contactBusinessService = contactBusinessService;
+    this.userService = userService;
   }
 
   /*
@@ -31,9 +32,9 @@ public class ContactBusinessController {
    */
 
   // All contacts business
-  @GetMapping(value = "/", produces = "application/json")
+  @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ContactBusiness> findContactsBusiness() {
-    return contactBusinessRepository.findAll();
+    return this.contactBusinessService.getAll();
   }
 
   /*
@@ -41,23 +42,46 @@ public class ContactBusinessController {
    */
 
   // A contact business
-  @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> addContactBusiness(@RequestParam String job, @RequestParam Long userId) {
+  @PostMapping(value = "/addOne", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> addContactBusiness(
+    @RequestParam String firstName,
+    @RequestParam String lastName,
+    @RequestParam String password,
+    @RequestParam String mail,
+    @RequestParam(required = false) String phone,
+    @RequestParam String job
+  ) {
     JSONObject result = new JSONObject();
-    User user = userRepository.findById(userId);
-    ContactBusiness contactBusiness = new ContactBusiness(job);
-    if (user != null) {
-      contactBusiness.setUser(user);
-      contactBusinessRepository.save(contactBusiness);
-      user.setContactBusiness(contactBusiness);
-      userRepository.save(user);
+    try {
+      ContactBusiness contactBusiness = this.contactBusinessService.addOne(
+        firstName,
+        lastName,
+        password,
+        mail,
+        job,
+        phone
+      );
       result.put("status", "success");
       result.put("idContactBusiness", contactBusiness.getId());
       return new ResponseEntity<>(result, HttpStatus.OK);
-    } else {
+    } catch (Exception e) {
       result.put("status", "fail");
-      return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
+  }
+
+
+  @PostMapping(value = "/addOneWithBusiness", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> addContactBusinessWithBusiness(
+    @RequestParam String firstName,
+    @RequestParam String lastName,
+    @RequestParam String password,
+    @RequestParam String mail,
+    @RequestParam(required = false) String phone,
+    @RequestParam String job
+  ) {
+    JSONObject result = new JSONObject();
+    return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   /*
@@ -65,7 +89,7 @@ public class ContactBusinessController {
    */
 
   // Update job
-  @PutMapping(value = "/job")
+  /*@PutMapping(value = "/job")
   public ResponseEntity<Object> updateName(@RequestParam Long id, @RequestParam String job) {
     return this.updateField(id, "job", job);
   }
@@ -74,13 +98,13 @@ public class ContactBusinessController {
   @PutMapping(value = "/validationStatus")
   public ResponseEntity<Object> updateValidationStatus(@RequestParam Long id, @RequestParam String validationStatus) {
     return this.updateField(id, "validationStatus", validationStatus);
-  }
+  }*/
 
   /*
   Private local functions
    */
 
-  private ResponseEntity<Object> updateField(Long id, String key, String value) {
+  /*private ResponseEntity<Object> updateField(Long id, String key, String value) {
     JSONObject result = new JSONObject();
     HttpStatus httpStatus;
     ContactBusiness contactBusiness = contactBusinessRepository.findById(id);
@@ -122,5 +146,9 @@ public class ContactBusinessController {
       httpStatus = HttpStatus.NOT_FOUND;
     }
     return new ResponseEntity<>(result, httpStatus);
-  }
+  }*/
+
+  /*
+  DELETE
+   */
 }

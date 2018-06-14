@@ -37,9 +37,14 @@ public class BusinessController {
 
   // A business
   @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> addBusiness(@RequestParam String name, @RequestParam String description,
-                                                   @RequestParam String activityArea, @RequestParam String websiteUrl,
-                                                   @RequestParam String phone, @RequestParam String siret) {
+  public ResponseEntity<Object> addBusiness(
+    @RequestParam String name,
+    @RequestParam String description,
+    @RequestParam String activityArea,
+    @RequestParam String websiteUrl,
+    @RequestParam String phone,
+    @RequestParam String siret
+  ) {
     JSONObject result = new JSONObject();
     if (!name.equals("") && !activityArea.equals("")
         && websiteUrl.matches("^(http:\\/\\/|https:\\/\\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?$")
