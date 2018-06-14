@@ -23,8 +23,9 @@
     "vue-router": "^3.0.1",
     "vue-session": "^1.0.0",
     "vue-template-compiler": "^2.5.13",
-    "vuetify": "^1.0.4",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vue-picture-input": "^2.1.5",
+    "vuetify": "^1.0.18"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
@@ -63,9 +64,9 @@
     "jest-serializer-vue": "^0.3.0",
     "jsdoc": "^3.5.5",
     "jsdoc-vuejs": "^1.0.13",
-    "nightwatch": "^0.9.12",
+    "nightwatch": "^1.0.6",
     "node-notifier": "^5.1.2",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.9.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "ora": "^1.2.0",
     "portfinder": "^1.0.13",
@@ -80,7 +81,7 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "uglifyjs-webpack-plugin": "^1.1.1",
-    "url-loader": "^0.5.8",
+    "url-loader": "^1.0.1",
     "vue-jest": "^1.0.2",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",

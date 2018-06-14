@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import Blank from '@/components/layouts/blank'
 import Menu from '@/components/layouts/menu'
 import StudentHome from '@/components/student/StudentHome'
 import StudentProfil from '@/components/student/StudentProfil'
-
-import HelloWorld from '@/components/HelloWorld'
+import Blank from '@/components/layouts/blank'
+// import Menu from '@/components/layouts/menu'
+// import HelloWorld from '@/components/HelloWorld'
+import SignUpBusiness from '@/components/business/views/signUpBusiness'
 
 Vue.use(Router)
 
@@ -14,10 +15,10 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Menu,
+      component: Blank,
       children: [{
-        path: 'HelloWorld',
-        component: HelloWorld
+        path: 'signUpBusiness',
+        component: SignUpBusiness
       }]
     },
     {
@@ -37,7 +38,7 @@ export default new Router({
 
     {
       path: '*',
-      redirect: '/HelloWorld'
+      redirect: '/signUpBusiness'
     }
   ]
 })

@@ -30,8 +30,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http.csrf().disable().authorizeRequests()
-            .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
+    http.csrf().disable().cors().and().authorizeRequests()
+            .antMatchers(SIGN_UP_URL, "/businesses")
+            .permitAll()
             .anyRequest().authenticated()
             .and()
 	    .cors()
