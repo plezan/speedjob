@@ -31,7 +31,7 @@ public class ContactBusinessController {
   GET
    */
 
-  // All contacts business
+  // All contacts contactBusiness
   @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ContactBusiness> findContactsBusiness() {
     return this.contactBusinessService.getAll();
@@ -41,7 +41,7 @@ public class ContactBusinessController {
   POST
    */
 
-  // A contact business
+  // A contact contactBusiness
   @PostMapping(value = "/addOne", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> addContactBusiness(
     @RequestParam String firstName,
@@ -75,10 +75,13 @@ public class ContactBusinessController {
   public ResponseEntity<Object> addContactBusinessWithBusiness(
     @RequestParam String firstName,
     @RequestParam String lastName,
-    @RequestParam String password,
     @RequestParam String mail,
     @RequestParam(required = false) String phone,
-    @RequestParam String job
+    @RequestParam String job,
+    @RequestParam String password,
+    @RequestParam String businessName,
+    @RequestParam(required = false) String siret,
+    @RequestParam(required = false) String businessWebsiteurl
   ) {
     JSONObject result = new JSONObject();
     return new ResponseEntity<>(result, HttpStatus.OK);
@@ -142,7 +145,7 @@ public class ContactBusinessController {
       }
     } else {
       result.put("status", "fail");
-      result.put("message", "Contact business was not found.");
+      result.put("message", "Contact contactBusiness was not found.");
       httpStatus = HttpStatus.NOT_FOUND;
     }
     return new ResponseEntity<>(result, httpStatus);

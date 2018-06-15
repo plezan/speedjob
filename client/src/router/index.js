@@ -7,7 +7,7 @@ import StudentProfil from '@/components/student/StudentProfil'
 import Blank from '@/components/layouts/blank'
 // import Menu from '@/components/layouts/menu'
 // import HelloWorld from '@/components/HelloWorld'
-import SignUpBusiness from '@/components/business/views/signUpBusiness'
+import SignUpContactBusiness from '@/components/contactBusiness/views/signUpContactBusiness'
 
 Vue.use(Router)
 
@@ -17,8 +17,8 @@ export default new Router({
       path: '/',
       component: Blank,
       children: [{
-        path: 'signUpBusiness',
-        component: SignUpBusiness
+        path: 'signUpContactBusiness',
+        component: SignUpContactBusiness
       }]
     },
     {

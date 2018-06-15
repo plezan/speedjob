@@ -32,7 +32,7 @@ public class ContactBusinessService {
   }
 
   /**
-   * Get every contacts business
+   * Get every contacts contactBusiness
    * @return
    */
   public List<ContactBusiness> getAll() {
@@ -40,7 +40,7 @@ public class ContactBusinessService {
   }
 
   /**
-   * Get a contact business with its id
+   * Get a contact contactBusiness with its id
    * @param id
    * @return
    */

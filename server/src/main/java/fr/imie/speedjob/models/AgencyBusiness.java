@@ -83,7 +83,7 @@ public class AgencyBusiness {
             ", name='" + name + '\'' +
             ", contactsBusiness=" + contactsBusiness +
             ", address=" + address +
-            ", business=" + business +
+            ", contactBusiness=" + business +
             '}';
   }
 }

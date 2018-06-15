@@ -41,7 +41,7 @@ public class AgencyBusinessController {
   POST
    */
 
-  // An agency business
+  // An agency contactBusiness
   @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> addAgencyBusiness(@RequestParam String name, @RequestParam String streetName,
                                                   @RequestParam String streetNumber, @RequestParam String postalCode,
@@ -75,7 +75,7 @@ public class AgencyBusinessController {
   PUT
    */
 
-  // Bind a contact business
+  // Bind a contact contactBusiness
   @PutMapping(value = "/bindContactBusiness", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> bindContactBusiness(@RequestParam Long agencyBusinessId, @RequestParam Long contactBusinessId) {
     JSONObject result = new JSONObject();
@@ -132,7 +132,7 @@ public class AgencyBusinessController {
   DELETE
    */
 
-  // Unbind a contact business
+  // Unbind a contact contactBusiness
   @DeleteMapping(value = "/unbindContactBusiness", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> unbindContactBusiness(@RequestParam Long agencyBusinessId, @RequestParam Long contactBusinessId) {
     JSONObject result = new JSONObject();
@@ -231,7 +231,7 @@ public class AgencyBusinessController {
 
     } else {
       result.put("status", "fail");
-      result.put("message", "Agency business was not found.");
+      result.put("message", "Agency contactBusiness was not found.");
       httpStatus = HttpStatus.NOT_FOUND;
     }
     return new ResponseEntity<>(result, httpStatus);

@@ -81,7 +81,7 @@
                         name="password"
                         label="Mot de passe"
                         suffix="*"
-                        hint="Au moins 6 caractères"
+                        hint="les caractères spéciaux sont conseillés"
                         :rules="passwordRules"
                         v-model="password"
                         min="6"
@@ -122,24 +122,21 @@
                             v-model="businessName"
                             @keyup.enter="onChangeExistingBusinessName"
                             @blur="onChangeExistingBusinessName"
-                            @change=""
                           ></v-select>
 
                           <v-text-field
                             name="siret"
                             label="SIREN - SIRET - RCS"
-                            :error-messages="siretRules"
-                            :rules="siretRulesWatched"
                             v-model="siret"
+                            disabled
                           ></v-text-field>
 
                           <v-text-field
                             name="businessWebsiteUrl"
                             label="Website"
-                            :error-messages="businessWebsiteUrlRules"
-                            :rules="businessWebsiteUrlRulesWatched"
                             v-model="businessWebsiteUrl"
                             hint="http://mon-site_web.com/..."
+                            disabled
                           ></v-text-field>
                         </v-tab-item>
 
@@ -151,13 +148,9 @@
                           <v-text-field
                             label="Raison sociale"
                             suffix="*"
-                            :error-messages="newBusinessRules"
-                            :rules="[
-                              () => businessName.length > 0 || 'La raison sociale est obligatoire',
-                              newBusinessRulesWatched
-                            ]"
+                            :error-messages="businessNameRules"
+                            :rules="businessNameWatched"
                             v-model="businessName"
-                            @change="onChangeNewBusinessName"
                           ></v-text-field>
 
                           <v-text-field
@@ -234,7 +227,7 @@
 
 <script>
   import PictureInput from 'vue-picture-input'
-  import {getAllBusinesses} from "../api";
+  import {getAllBusinesses, addContactWithBusiness} from "../api";
   import * as regex from "../../../commons/regex";
 
   export default {
@@ -253,48 +246,50 @@
         valid: false,
         loadingBusiness: false,
         businesses: [],
-        firstName: '',
+        firstName: 'qsdqsd',
         firstNameRules: [
           v => !!v || 'Le prénom est obligatoire',
           v => (v && v.length <= 20) || 'Le prénom doit être inférieur ou égal à 20 caractères'
         ],
-        lastName: '',
+        lastName: 'qsdqsd',
         lastNameRules: [
           v => !!v || 'Le nom de famille est obligatoire',
           v => (v && v.length <= 40) || 'Le nom de famille doit être inférieur ou égal à 40 caractères'
         ],
-        mail: '',
+        mail: 'qsdqsd@qsd.qsd',
         mailRules: [
           v => !!v || 'Le mail est obligatoire',
           v => regex.isMailValid(v) || 'Le mail n\'est pas valide'
         ],
-        phone: '',
+        phone: '0231458798',
         phoneRules: [],
-        job: '',
+        job: 'qsdqsd',
         jobRules: [
           v => !!v || 'Le poste est obligatoire',
           v => (v && v.length <= 20) || 'Le titre du poste doit être inférieur ou égal à 20 caractères'
         ],
         passwordHide: true,
-        password: '',
+        password: '123456',
         passwordRules: [
           v => !!v || 'Le mot de passe est obligatoire',
-          v => (v && v.length >= 6) || 'Le mot de passe doit contenir au moins 6 caractères',
-          v => (v && v.length <= 30) || 'Le mot de passe doit contenir moins de 30 caractères'
+          v => (v && v.length >= 6) || 'Le mot de passe doit contenir au moins 6 caractères'
         ],
-        passwordRepetition: '',
+        passwordRepetition: '123456',
         passwordRepetitionRules: [
           v => !!v || 'Vous devez répéter votre mot de passe',
           v => (v && v === this.password) || 'Les mots de passe ne correspondent pas'
         ],
-        businessName: '',
+        businessName: 'qsdqsd',
+        businessNameError: false,
         businessNameRules: [
           v => !!v || 'La raison sociale est obligatoire',
           v => (v && v.length <= 30) || 'La raison sociale doit contenir moins de 30 caractères'
         ],
-        siret: '',
+        siret: '123456987',
+        siretError: false,
         siretRules: [],
         businessWebsiteUrl: '',
+        businessWebsiteUrlError: false,
         businessWebsiteUrlRules: [],
         postalCode: '',
         postalCodeRules: [
@@ -315,18 +310,64 @@
           : [];
         return true;
       },
+      businessNameWatched() {
+        if (this.businessName.length < 1) {
+          this.businessNameRules = ['La raison sociale est obligatoire.'];
+          this.businessNameError = true;
+          return true;
+        }
+        for (let i in this.businesses) {
+          if (this.businessName.toLowerCase() === this.businesses[i].name.toLowerCase()) {
+            this.businessNameRules = ['Une entreprise de ce nom-là existe déjà.'];
+            this.businessNameError = true;
+            return true;
+          }
+        }
+        this.businessNameRules = [];
+        this.businessNameError = false;
+        return true;
+      },
       siretRulesWatched () {
-        this.siretRules = this.siret.length > 0 && !regex.isSiretValid(this.siret)
-          ? ['SIRENT/SIRET/RCS invalide.']
-          : [];
-        return [];
+        if (this.siret && !regex.isSiretValid(this.siret)) {
+          this.siretRules = ['SIREN/SIRET/RCS invalide.'];
+          this.siretError = true;
+          return true;
+        }
+
+        for (let i in this.businesses) {
+          if (this.siret.toLowerCase().replace(/\s/g,'')
+            === this.businesses[i].siret.toLowerCase().replace(/\s/g,'')) {
+            this.siretRules = ['Un numéro similaire existe déjà.'];
+            this.siretError = true;
+            return true;
+          }
+        }
+
+        this.siretRules = [];
+        this.siretError = false;
+        return true;
       },
       businessWebsiteUrlRulesWatched () {
-        this.businessWebsiteUrlRules = this.businessWebsiteUrl.length > 0
-          && !regex.isWebsiteUrlValid(this.businessWebsiteUrl)
-          ? ['L\'adresse web est incorrecte.']
-          : [];
-        return [];
+        if (this.businessWebsiteUrl
+          && !regex.isWebsiteUrlValid(this.businessWebsiteUrl)) {
+          this.businessWebsiteUrlRules = ['l\'adresse web est incorrecte.'];
+          this.businessWebsiteUrlError = true;
+          return true;
+        }
+
+        for (let i in this.businesses) {
+          if (this.businesses[i].websiteUrl
+            && this.businessWebsiteUrl.toLowerCase().replace(/\s/g,'')
+            === this.businesses[i].websiteUrl.toLowerCase().replace(/\s/g,'')) {
+            this.businessWebsiteUrlRules = ['Une URL similaire existe déjà.'];
+            this.businessWebsiteUrlError = true;
+            return true;
+          }
+        }
+
+        this.businessWebsiteUrlRules = [];
+        this.businessWebsiteUrlError = false;
+        return true;
       }
     },
     methods: {
@@ -365,18 +406,20 @@
           }
         }, 200);
       },
-      onChangeNewBusinessName () {
-        for (let i in this.businesses) {
-          if (this.businessName.toLowerCase() === this.businesses[i].name.toLowerCase()) {
-
-          }
-
-        }
-      },
-      submit: function (event) {
-        if (this.$refs.form.validate()) {
-          console.log(this.image);
-
+      submit () {
+        if (this.$refs.form.validate()
+        && !this.businessNameError && !this.siretError && !this.businessWebsiteUrlError) {
+          addContactWithBusiness(
+            this.firstName,
+            this.lastName,
+            this.mail,
+            this.phone,
+            this.job,
+            this.password,
+            this.businessName,
+            this.siret,
+            this.businessWebsiteUrl
+          );
         }
       }
     }

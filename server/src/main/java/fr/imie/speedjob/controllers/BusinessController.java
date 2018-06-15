@@ -35,7 +35,7 @@ public class BusinessController {
   POST
    */
 
-  // A business
+  // A contactBusiness
   @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> addBusiness(
     @RequestParam String name,
