@@ -26,7 +26,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app fixed clipped-left>
-      <v-toolbar-side-icon> </v-toolbar-side-icon> 
+      <v-toolbar-side-icon> </v-toolbar-side-icon>
       <v-toolbar-title>SpeedJob</v-toolbar-title>
     </v-toolbar>
 
@@ -63,8 +63,7 @@
 </template>
 
 <script>
-  import './offerPageDirective'; 
-  import store from './offerPageStore'
+
 
   export default {
     data () {
@@ -72,12 +71,12 @@
         drawer: true,
         state: store.state,
       }
-    }, 
+    },
     computed: {
       offer () { return this.state.offer}
     }
 
   }
 
-  
+
 </script>

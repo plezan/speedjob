@@ -9,7 +9,6 @@ import StudentProfil from '@/components/student/StudentProfil'
 import HelloWorld from '@/components/HelloWorld'
 import addOffers from '@/components/addOffers'
 import offerPage from '@/components/offerPage'
-import offerPageDirective from '@/components/offerPageDirective'
 
 Vue.use(Router)
 
