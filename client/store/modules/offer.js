@@ -34,20 +34,20 @@ const getters= {
 }
 
 const actions = {
-  publishOffer ({ commit, state}, offer){
+  publishOffer ({commit, state}, offer){
     axios.post('offers/offer?id=1', offer)
     .then(response => {
       commit('publishOffer', response)
     })
     .catch(err => {
       console.log(err, response)
-    }
+    })
   },
 
   registerUnfinishedOffer ({commit, state}, offer){
     //changement de status pour enregistrer un brouillon
-    let offer_status = 2;
-    axios.post('offer/offers', offer, offe_status)
+    this.offer_status = true;
+    axios.post('offer/offers', offer)
     .then(response => {
       commit('response', response)
     })

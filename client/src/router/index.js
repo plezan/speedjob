@@ -7,8 +7,8 @@ import StudentHome from '@/components/student/StudentHome'
 import StudentProfil from '@/components/student/StudentProfil'
 
 import HelloWorld from '@/components/HelloWorld'
-import addOffers from '@/components/addOffers'
-import offerPage from '@/components/offerPage'
+import addOffers from '@/components/offer/addOffers'
+//import offerPage from '@/components/offer/offerPage'
 
 Vue.use(Router)
 
@@ -35,12 +35,12 @@ export default new Router({
           component: StudentProfil
         },
         {
-          path: 'components/addOffers',
+          path: 'offer/addOffers',
           component: addOffers
         },
         {
-          path: 'components/offerPage',
-          component: offerPage
+          //path: 'offer/offerPage',
+          //component: offerPage
         }
       ]
     },

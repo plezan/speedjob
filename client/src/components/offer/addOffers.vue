@@ -121,11 +121,6 @@
       <div class="ContactBusiness">
       <v-menu transition="scale-transition">
       <v-btn dark color="primary" slot="activator">Contacts</v-btn>
-      <v-list>
-        <v-list-tile v-for="n in 5" >
-          <v-list-tile-title v-text="'Item ' + n"></v-list-tile-title>
-        </v-list-tile>
-      </v-list>
       </v-menu>
       </div>
 
@@ -168,6 +163,7 @@ export default {
           'Jenkins', 'Jest', 'UX', 'NGINX', 'NPM',
         ],
       },
+      offer: {
       offe_id: '',
       offe_title: '',
       type_name: '',
@@ -179,9 +175,8 @@ export default {
       offe_status: '',
       type_id: '',
       type_name: '',
-
+      },
   }),
-
   computed: {
     offer: function (){
       return this.$store.state.offer
@@ -191,39 +186,21 @@ export default {
     }
 
   },
-
-  mounted: {
-  this.$store.dispatch('publishOffer')
-  this.$store.dispatch('registerUnfinishedOffer')
-  }
-
-
   methods: {
 
-      let newOffer = {
-        offe_id: this.offe_id,
-        offe_title: this.offe_title,
-        type_name: this.type_name,
-        offe_description: this.offe_description,
-        offe_startDate: this.offe_startDate,
-        offe_endDate: this.offe_endDate,
-        comp_id: this.comp_id,
-        competences: this.competences,
-        offe_status: this.offe_status,
-        type_id: this.type_id,
-
-
-      return newOffer = JSON.stringify(new newOffer);
+    publishOffer: function(offer){
+      if(this.offe_title, this.offe_description, this.offe_startDate, this.offe_endDate, this.competences !== null){
+        this.offer.offe_id = this.offe_id++; 
+        this.offer.offe_status = true; 
+      }
     },
-
-    isFilled: function (newOffer){
-
+    draft: function (offer){
+      if(this.offe_title, this.offe_description, this.offe_startDate, this.offe_endDate === null){
+        this.offer.offe_status = false;
+      }
     },
-
-
-
-  }
-
+  },
+}
 </script>
 
 <style scoped>
