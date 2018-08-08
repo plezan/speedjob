@@ -75,6 +75,7 @@ export default {
       ).then((response) => {
         this.$session.set('jwt', response.headers.authorization)
         console.log(this.$session.get('jwt'))
+        this.$router.push('/')
       })
 
       return false
