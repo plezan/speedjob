@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    el: '#app',
+    name: 'offerPage'
     data: () => {
       return {
         drawer: true,
@@ -14,6 +14,13 @@
     },
     computed: {
       offer () { return this.state.offer}
+    }, 
+    methods: {
+      display: function (offer){
+        if(this.offer.length > 0){
+          return this.offer
+        }
+      }
     }
 
   }

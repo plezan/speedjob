@@ -108,7 +108,7 @@
         <v-select
           label="Select"
           :items="competences"
-          v-model="e7"
+          v-model="comp"
           multiple
           max-height="200"
           chips
@@ -145,8 +145,7 @@ export default {
   el: '#app',
   data: () => ({
        return: {
-        todos: [],
-        e7: [],
+        comp: [],
         competences: [
           'Angular2','Angular.js', 'CSS3', 'Javascript', 'Jquery',
           'HTML5', 'PHP7', 'Python', 'Java',
@@ -167,12 +166,11 @@ export default {
       offe_id: '',
       offe_title: '',
       type_name: '',
-      offe_status: '',
+      offe_status: false,
       offe_description: '',
       offe_startDate: '',
       offe_endDate: '',
       comp_id: '',
-      offe_status: '',
       type_id: '',
       type_name: '',
       },
@@ -189,15 +187,27 @@ export default {
   methods: {
 
     publishOffer: function(offer){
-      if(this.offe_title, this.offe_description, this.offe_startDate, this.offe_endDate, this.competences !== null){
+      if(this.offe_title && this.offe_description !== null){
         this.offer.offe_id = this.offe_id++; 
         this.offer.offe_status = true; 
       }
+      this.offer.push({
+        offe_title = this.offe_title, 
+        offe_description = this.offe_description, 
+        offe_startDate = this.offe_startDate,
+        offe_endDate = this.offe_endDate, 
+      })
     },
     draft: function (offer){
-      if(this.offe_title, this.offe_description, this.offe_startDate, this.offe_endDate === null){
+      if(this.offe_title && this.offe_description === null){
         this.offer.offe_status = false;
       }
+        this.offer.push({
+        offe_title = this.offe_title, 
+        offe_description = this.offe_description, 
+        offe_startDate = this.offe_startDate,
+        offe_endDate = this.offe_endDate, 
+      })
     },
   },
 }
