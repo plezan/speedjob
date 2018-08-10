@@ -1,7 +1,9 @@
 package fr.imie.speedjob.controllers;
 
-import fr.imie.speedjob.repositories.BusinessRepository;
+import fr.imie.speedjob.models.AgencyBusiness;
 import fr.imie.speedjob.models.Business;
+import fr.imie.speedjob.services.AgencyBusinessService;
+import fr.imie.speedjob.services.BusinessService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,26 +11,25 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/businesses")
 public class BusinessController {
   @Autowired
-  private BusinessRepository businessRepository;
-
-  public BusinessController(BusinessRepository businessRepository) {
-    this.businessRepository = businessRepository;
-  }
+  private BusinessService businessService;
+  @Autowired
+  private AgencyBusinessService agencyBusinessService;
 
   /*
   GET
    */
 
   // All businesses
-  @GetMapping(produces = "application/json")
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public List<Business> findContactsBusiness() {
-    return businessRepository.findAll();
+    return businessService.getAll();
   }
 
   /*
@@ -42,20 +43,18 @@ public class BusinessController {
     @RequestParam String description,
     @RequestParam String activityArea,
     @RequestParam String websiteUrl,
-    @RequestParam String phone,
     @RequestParam String siret
   ) {
     JSONObject result = new JSONObject();
-    if (!name.equals("") && !activityArea.equals("")
-        && websiteUrl.matches("^(http:\\/\\/|https:\\/\\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[a-z]{3}.?([a-z]+)?$")
-        && (phone.length() == 10 || phone.length() == 12) && siret.length() == 14) {
-      Business business = new Business(name, false, description, activityArea, websiteUrl, phone, siret);
-      businessRepository.save(business);
+    try {
+      Business business = new Business(name, false, description, activityArea, websiteUrl, siret);
+      business = businessService.saveOne(business);
       result.put("status", "success");
       result.put("businessId", business.getId());
       return new ResponseEntity<>(result, HttpStatus.OK);
-    } else {
+    } catch (Exception e){
       result.put("status", "fail");
+      result.put("message", e.getMessage());
       return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
     }
   }
@@ -94,12 +93,6 @@ public class BusinessController {
     return this.updateField(id, "websiteUrl", websiteUrl);
   }
 
-  // Update phone
-  @PutMapping(value = "/phone")
-  public ResponseEntity<Object> updatePhone(@RequestParam Long id, @RequestParam String phone) {
-    return this.updateField(id, "phone", phone);
-  }
-
   // Update siret
   @PutMapping(value = "/siret")
   public ResponseEntity<Object> updateSiret(@RequestParam Long id, @RequestParam String siret) {
@@ -113,7 +106,7 @@ public class BusinessController {
   private ResponseEntity<Object> updateField(Long id, String key, String value) {
     JSONObject result = new JSONObject();
     HttpStatus httpStatus;
-    Business business = businessRepository.findById(id);
+    Business business = businessService.getOne(id);
 
     if (business != null) {
       switch (key) {
@@ -172,21 +165,9 @@ public class BusinessController {
           }
           break;
         }
-        case "phone": {
-          if (value.matches("/^\\s*(?:\\+?(\\d{1,3}))?([-. (]*(\\d{3})[-. )]*)?((\\d{3})[-. ]*(\\d{2,4})(?:[-.x ]*(\\d+))?)\\s*$/")) {
-            business.setPhone(value);
-            result.put("status", "success");
-            httpStatus = HttpStatus.OK;
-          } else {
-            result.put("status","fail");
-            result.put("message","Phone number is not valid.");
-            httpStatus = HttpStatus.BAD_REQUEST;
-          }
-          break;
-        }
         case "siret": {
           if (value.length() == 14) {
-            business.setPhone(value);
+            business.setSiret(value);
             result.put("status", "success");
             httpStatus = HttpStatus.OK;
           } else {
@@ -204,6 +185,25 @@ public class BusinessController {
       result.put("status", "fail");
       result.put("message", "Business was not found.");
       httpStatus = HttpStatus.NOT_FOUND;
+    }
+    return new ResponseEntity<>(result, httpStatus);
+  }
+
+  @DeleteMapping
+  public ResponseEntity<Object> deleteBusiness(@RequestParam Long id) throws Exception {
+    JSONObject result = new JSONObject();
+    HttpStatus httpStatus;
+
+    Business business = this.businessService.getOne(id);
+    if (business != null) {
+      this.businessService.deleteOne(business);
+      result.put("status", "success");
+      result.put("message", "L'entreprise a bien été supprimée");
+      httpStatus = HttpStatus.OK;
+    } else {
+      result.put("status", "fail");
+      result.put("message", "L'identifiant ne correspond à aucune entreprise.");
+      httpStatus = HttpStatus.BAD_REQUEST;
     }
     return new ResponseEntity<>(result, httpStatus);
   }

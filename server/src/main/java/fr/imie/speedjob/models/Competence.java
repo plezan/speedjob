@@ -17,7 +17,11 @@ public class Competence {
   @Column(nullable = false)
   private Integer level;
 
-  @ManyToMany(mappedBy = "competences", targetEntity = Student.class)
+  @ManyToMany(
+    cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
+    mappedBy = "competences",
+    targetEntity = Student.class
+  )
   @JsonIgnoreProperties("competences")
   private List<User> studentCompetences;
 

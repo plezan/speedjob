@@ -18,7 +18,7 @@ public class ContactBusiness {
   @Column(nullable = false)
   private boolean validationStatus;
 
-  @OneToOne(mappedBy = "contactBusiness")
+  @OneToOne(mappedBy = "contactBusiness", cascade = CascadeType.ALL)
   @JsonIgnoreProperties("contactBusiness")
   private User user;
 
@@ -66,15 +66,5 @@ public class ContactBusiness {
 
   public void setAgenciesBusiness(List<AgencyBusiness> agenciesBusiness) {
     this.agenciesBusiness = agenciesBusiness;
-  }
-
-  @Override
-  public String toString() {
-    return "ContactBusiness{" +
-            "id=" + id +
-            ", job='" + job + '\'' +
-            ", validationStatus=" + validationStatus +
-            ", agenciesBusiness=" + agenciesBusiness +
-            '}';
   }
 }

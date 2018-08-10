@@ -2,6 +2,7 @@ package fr.imie.speedjob.controllers;
 
 import commons.ImageExtensions;
 import fr.imie.speedjob.SpeedjobApplication;
+import fr.imie.speedjob.models.ContactBusiness;
 import fr.imie.speedjob.models.Image;
 import fr.imie.speedjob.models.User;
 import fr.imie.speedjob.services.FileService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,7 +36,7 @@ class UserController {
    */
 
   // All users
-  @GetMapping(value = "/", produces = "application/json")
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public List<User> findUsers() {
     return userService.getAll();
   }
@@ -81,7 +83,7 @@ class UserController {
     @RequestParam String password
   ) throws Exception {
     JSONObject result = new JSONObject();
-    User user = this.userService.addOne(firstName, lastName, password, mail);
+    User user = this.userService.saveOne(null, firstName, lastName, password, mail);
     if (user.getId() != null) {
       result.put("status", "success");
       result.put("userId", user.getId());
@@ -122,17 +124,27 @@ class UserController {
   DELETE
    */
 
-  @DeleteMapping(value = "/")
-  public ResponseEntity<Object> deleteOne(@RequestParam Long id) {
+  @DeleteMapping
+  public ResponseEntity<Object> deleteOne(@RequestParam Long id) throws Exception {
     JSONObject result = new JSONObject();
     User user = this.userService.getOne(id);
 
     if (user != null) {
+      // Verify if user is a contact business and has links to agencies (ManyToMany)
+      ContactBusiness contactBusiness = user.getContactBusiness();
+      if (contactBusiness != null) {
+        contactBusiness.setAgenciesBusiness(new ArrayList<>());
+        user.setContactBusiness(contactBusiness);
+        this.userService.saveOne(user);
+      }
+
       this.userService.deleteOne(user);
       result.put("status", "success");
+      result.put("message", "L'utilisateur a bien été supprimé.");
       return new ResponseEntity<>(result, HttpStatus.OK);
     } else {
       result.put("status", "fail");
+      result.put("message", "L'identifiant ne correspond à aucun utilisateur.");
       return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
     }
   }

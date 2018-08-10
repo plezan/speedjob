@@ -1,9 +1,12 @@
 package fr.imie.speedjob.controllers;
 
+import fr.imie.speedjob.models.AgencyBusiness;
+import fr.imie.speedjob.models.Business;
 import fr.imie.speedjob.models.ContactBusiness;
 import fr.imie.speedjob.models.User;
+import fr.imie.speedjob.services.AgencyBusinessService;
+import fr.imie.speedjob.services.BusinessService;
 import fr.imie.speedjob.services.ContactBusinessService;
-import fr.imie.speedjob.services.UserService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,19 +24,16 @@ public class ContactBusinessController {
   @Autowired
   private ContactBusinessService contactBusinessService;
   @Autowired
-  private UserService userService;
-
-  public ContactBusinessController(ContactBusinessService contactBusinessService, UserService userService) {
-    this.contactBusinessService = contactBusinessService;
-    this.userService = userService;
-  }
+  private AgencyBusinessService agencyBusinessService;
+  @Autowired
+  private BusinessService businessService;
 
   /*
   GET
    */
 
   // All contacts contactBusiness
-  @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public List<ContactBusiness> findContactsBusiness() {
     return this.contactBusinessService.getAll();
   }
@@ -53,13 +54,15 @@ public class ContactBusinessController {
   ) {
     JSONObject result = new JSONObject();
     try {
-      ContactBusiness contactBusiness = this.contactBusinessService.addOne(
+      ContactBusiness contactBusiness = this.contactBusinessService.saveOne(
+        null,
         firstName,
         lastName,
         password,
         mail,
         job,
-        phone
+        phone,
+        null
       );
       result.put("status", "success");
       result.put("idContactBusiness", contactBusiness.getId());
@@ -71,20 +74,100 @@ public class ContactBusinessController {
   }
 
 
-  @PostMapping(value = "/addOneWithBusiness", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/withBusiness", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Object> addContactBusinessWithBusiness(
     @RequestParam String firstName,
     @RequestParam String lastName,
     @RequestParam String mail,
-    @RequestParam(required = false) String phone,
     @RequestParam String job,
     @RequestParam String password,
     @RequestParam String businessName,
+    @RequestParam String activityArea,
+    @RequestParam(required = false) String phone,
     @RequestParam(required = false) String siret,
-    @RequestParam(required = false) String businessWebsiteurl
+    @RequestParam(required = false) String businessWebsiteUrl
   ) {
     JSONObject result = new JSONObject();
-    return new ResponseEntity<>(result, HttpStatus.OK);
+    try {
+      ContactBusiness contactBusiness = new ContactBusiness();
+      User user = new User();
+      user.setFirstName(firstName);
+      user.setLastName(lastName);
+      user.setPassword(password);
+      user.setMail(mail);
+      contactBusiness.setJob(job);
+      user.setPhone(phone);
+      contactBusiness.setUser(user);
+
+      // Creation of a blank agency business that will be the main
+      Business business = new Business();
+      business.setName(businessName);
+      business.setSiret(siret);
+      business.setWebsiteUrl(businessWebsiteUrl);
+      business.setActivityArea(activityArea);
+
+      AgencyBusiness agencyBusiness = new AgencyBusiness();
+      agencyBusiness.setName(businessName + " siège social");
+      agencyBusiness.setBusiness(business);
+      List<AgencyBusiness> agenciesBusiness = new ArrayList<>();
+      agenciesBusiness.add(agencyBusiness);
+      business.setAgenciesBusiness(agenciesBusiness);
+      contactBusiness.setAgenciesBusiness(agenciesBusiness);
+
+      // Save all data
+      //business = this.businessService.saveOne(business);
+      contactBusiness = this.contactBusinessService.saveOne(contactBusiness);
+
+      result.put("status", "success");
+      result.put("userId", contactBusiness.getUser().getId());
+      return new ResponseEntity<>(result, HttpStatus.OK);
+    } catch (Exception e) {
+      result.put("status", "fail");
+      result.put("message", e.getMessage());
+      return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @PostMapping(value = "/withExistantBusiness", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Object> addContactBusinessWithExistantBusiness(
+    @RequestParam String firstName,
+    @RequestParam String lastName,
+    @RequestParam String mail,
+    @RequestParam String job,
+    @RequestParam String password,
+    @RequestParam Long businessId,
+    @RequestParam(required = false) String phone
+  ) {
+    JSONObject result = new JSONObject();
+    try {
+      ContactBusiness contactBusiness = new ContactBusiness();
+      User user = new User();
+      user.setFirstName(firstName);
+      user.setLastName(lastName);
+      user.setPassword(password);
+      user.setMail(mail);
+      contactBusiness.setJob(job);
+      user.setPhone(phone);
+      contactBusiness.setUser(user);
+
+      // Adding existant business
+      Business business = this.businessService.getOne(businessId);
+      if (business == null)
+        throw new Exception("L'entreprise n'a pas été trouvée avec cet identifiant.");
+
+      // Get main agency business associated with found business
+      AgencyBusiness agencyBusiness = business.getHeadOffice();
+      agencyBusiness.getContactsBusiness().add(contactBusiness);
+
+      contactBusiness = this.contactBusinessService.saveOne(contactBusiness);
+      result.put("status", "success");
+      result.put("userId", contactBusiness.getUser().getId());
+      return new ResponseEntity<>(result, HttpStatus.OK);
+    } catch (Exception e) {
+      result.put("status", "fail");
+      result.put("message", e.getMessage());
+      return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+    }
   }
 
   /*
@@ -154,4 +237,23 @@ public class ContactBusinessController {
   /*
   DELETE
    */
+  @DeleteMapping
+  public ResponseEntity<Object> deleteContactBusiness(@RequestParam Long id) {
+    JSONObject result = new JSONObject();
+    HttpStatus httpStatus;
+
+    ContactBusiness contactBusiness = this.contactBusinessService.getOne(id);
+    if (contactBusiness != null) {
+      this.contactBusinessService.deleteOne(contactBusiness);
+      result.put("status", "success");
+      result.put("message", "Le contact entreprise a bien été supprimé");
+      httpStatus = HttpStatus.OK;
+    } else {
+      result.put("status", "fail");
+      result.put("message", "L'identifiant du contact entreprise est introuvable.");
+      httpStatus = HttpStatus.BAD_REQUEST;
+    }
+
+    return new ResponseEntity<>(result, httpStatus);
+  }
 }

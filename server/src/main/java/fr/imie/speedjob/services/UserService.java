@@ -1,5 +1,6 @@
 package fr.imie.speedjob.services;
 
+import com.sun.istack.internal.Nullable;
 import commons.Regex;
 import fr.imie.speedjob.models.User;
 import fr.imie.speedjob.repositories.UserRepository;
@@ -52,39 +53,46 @@ public class UserService {
     return userRepository.findById(id);
   }
 
-  /**
-   * Add a new user
-   * @param firstName
-   * @param lastName
-   * @param password
-   * @param mail
-   * @return
-   */
-  public User addOne(
+  public User saveOne(
+    User user
+  ) throws Exception {
+    return this.saveOne(
+      user.getId(),
+      user.getFirstName(),
+      user.getLastName(),
+      user.getPassword(),
+      user.getMail()
+    );
+  }
+
+  public User saveOne(
+    @Nullable Long id,
     String firstName,
     String lastName,
     String password,
     String mail
   ) throws Exception {
-    if (userRepository.countByMail(mail) == 0) {
-      if (
-        (!firstName.isEmpty() && firstName.length() <= 20) &&
-        (!lastName.isEmpty() && lastName.length() <= 40) &&
-        (!password.isEmpty() && password.length() > 6) &&
-        (!mail.isEmpty() && Regex.isMailValid(mail))
-      ) {
-        User user = new User(
-          firstName,
-          lastName,
-          bCryptPasswordEncoder.encode(password),
-          mail
-        );
-        userRepository.save(user);
-        return user;
-      } else
-        throw new Exception("Fields are not valid.");
-    } else
-      throw new Exception("Same mail is already saved.");
+    User user = new User();
+    
+    if (id != null)
+      user.setId(id);
+    else {
+      if (userRepository.countByMail(mail) == 0) {
+        if (!password.isEmpty() && password.length() >= 6)
+          user.setPassword(bCryptPasswordEncoder.encode(password));
+        else throw new Exception("Le mot de passe n'est pas valide.");
+
+        if (!mail.isEmpty() && Regex.isMailValid(mail))
+          user.setMail(mail);
+        else throw new Exception("Les attributs ne sont pas valides.");
+      } else throw new Exception("L'adresse mail est déjà utilisée.");
+    }
+    if (!firstName.isEmpty() && firstName.length() <= 20)
+      user.setFirstName(firstName);
+    if (!lastName.isEmpty() && lastName.length() <= 40)
+      user.setLastName(lastName);
+
+    return userRepository.save(user);
   }
 
   public void updateProfileImage(MultipartFile profileImage, User user) {

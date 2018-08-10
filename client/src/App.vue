@@ -5,6 +5,7 @@
 </template>
 
 <script>
+  import Router from 'router/index'
   /**
    * @vue
    * Entry point of the app
@@ -15,7 +16,7 @@
 </script>
 
 <style lang="stylus">
-  @import './styl/alert.styl'
+  @import '~vuetify/src/stylus/main'
   @import './styl/card.styl'
 
   @font-face

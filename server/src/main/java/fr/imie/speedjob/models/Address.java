@@ -89,16 +89,4 @@ public class Address {
   public void setAgenciesBusiness(List<AgencyBusiness> agenciesBusiness) {
     this.agenciesBusiness = agenciesBusiness;
   }
-
-  @Override
-  public String toString() {
-    return "Address{" +
-            "id=" + id +
-            ", streetName='" + streetName + '\'' +
-            ", streetNumber='" + streetNumber + '\'' +
-            ", postalCode='" + postalCode + '\'' +
-            ", additionalInfo='" + additionalInfo + '\'' +
-            ", agenciesBusiness=" + agenciesBusiness +
-            '}';
-  }
 }

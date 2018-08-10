@@ -37,7 +37,7 @@
       </v-container>
     </v-content>
     <v-footer app fixed>
-      <span>&copy; IMIE 2018</span>
+      <span class="copyright">&copy; IMIE 2018</span>
     </v-footer>
   </v-app>
 </template>
@@ -49,3 +49,8 @@ export default {
   })
 }
 </script>
+
+<style lang="stylus">
+  .copyright
+    margin-left 6px
+</style>

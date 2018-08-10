@@ -1,6 +1,8 @@
 package fr.imie.speedjob.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,9 +15,9 @@ public class Business {
 
   private String name;
 
+  @Value("${some.key:false}")
   private boolean validationStatus;
 
-  @Lob
   @Column(length = 500)
   private String description;
 
@@ -24,27 +26,27 @@ public class Business {
   private String websiteUrl;
 
   @Column(length = 20)
-  private String phone;
-
-  @Column(length = 20)
   private String siret;
 
-  @Column
-  private String profileImageUrl;
-
-  @OneToMany(mappedBy = "business")
+  @OneToMany(
+    mappedBy = "business",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true,
+    targetEntity = AgencyBusiness.class
+  )
   @JsonIgnoreProperties("business")
   private List<AgencyBusiness> agenciesBusiness;
 
-  public Business() {}
+  public Business() {
+    this.validationStatus = false;
+  }
 
-  public Business(String name, boolean validationStatus, String description, String activityArea, String websiteUrl, String phone, String siret) {
+  public Business(String name, boolean validationStatus, String description, String activityArea, String websiteUrl, String siret) {
     this.name = name;
     this.validationStatus = validationStatus;
     this.description = description;
     this.activityArea = activityArea;
     this.websiteUrl = websiteUrl;
-    this.phone = phone;
     this.siret = siret;
   }
 
@@ -96,14 +98,6 @@ public class Business {
     this.websiteUrl = websiteUrl;
   }
 
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
   public String getSiret() {
     return siret;
   }
@@ -117,21 +111,19 @@ public class Business {
   }
 
   public void setAgenciesBusiness(List<AgencyBusiness> agenciesBusiness) {
+    if (agenciesBusiness.size() == 1)
+      agenciesBusiness.get(0).setHeadOffice(true);
     this.agenciesBusiness = agenciesBusiness;
   }
 
-  @Override
-  public String toString() {
-    return "Business{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", validationStatus=" + validationStatus +
-            ", description='" + description + '\'' +
-            ", activityArea='" + activityArea + '\'' +
-            ", websiteUrl='" + websiteUrl + '\'' +
-            ", phone='" + phone + '\'' +
-            ", siret='" + siret + '\'' +
-            ", agenciesBusiness=" + agenciesBusiness +
-            '}';
+  @JsonIgnore
+  public AgencyBusiness getHeadOffice() {
+    if (this.getAgenciesBusiness() != null) {
+      for (AgencyBusiness agencyBusiness: this.getAgenciesBusiness()) {
+        if (agencyBusiness.isHeadOffice())
+          return agencyBusiness;
+      }
+      return null;
+    } else return null;
   }
 }

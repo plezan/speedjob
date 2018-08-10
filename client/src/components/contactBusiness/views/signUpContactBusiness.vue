@@ -1,14 +1,5 @@
 <template>
   <div>
-    <v-alert
-      v-model="alert"
-      :type="alertStatus"
-      transition="slide-x-transition"
-      dismissible
-    >
-      {{ alertMessage }}
-    </v-alert>
-
     <v-container>
 
       <v-layout row wrap>
@@ -125,6 +116,13 @@
                           ></v-select>
 
                           <v-text-field
+                            name="activityArea"
+                            label="Secteur d'activité"
+                            v-model="activityArea"
+                            disabled
+                          ></v-text-field>
+
+                          <v-text-field
                             name="siret"
                             label="SIREN - SIRET - RCS"
                             v-model="siret"
@@ -154,6 +152,12 @@
                           ></v-text-field>
 
                           <v-text-field
+                            name="activityArea"
+                            label="Secteur d'activité"
+                            v-model="activityArea"
+                          ></v-text-field>
+
+                          <v-text-field
                             name="siret"
                             label="SIREN - SIRET - RCS"
                             :error-messages="siretRules"
@@ -171,8 +175,6 @@
                           ></v-text-field>
                         </v-tab-item>
                       </v-tabs>
-
-
 
                       <v-layout row wrap>
                         <v-flex xs6 offset-xs3>
@@ -227,7 +229,9 @@
 
 <script>
   import PictureInput from 'vue-picture-input'
-  import {getAllBusinesses, addContactWithBusiness} from "../api";
+  import {getAllBusinesses, addContactWithBusiness, addContactWithExistantBusiness} from "../api";
+  import {login} from '../../../commons/api';
+  import Alert from '../../../commons/views/alert';
   import * as regex from "../../../commons/regex";
 
   export default {
@@ -240,9 +244,6 @@
     data () {
       return {
         tabActive: null,
-        alert: false,
-        alertStatus: 'info',
-        alertMessage: '',
         valid: false,
         loadingBusiness: false,
         businesses: [],
@@ -285,6 +286,7 @@
           v => !!v || 'La raison sociale est obligatoire',
           v => (v && v.length <= 30) || 'La raison sociale doit contenir moins de 30 caractères'
         ],
+        activityArea: '',
         siret: '123456987',
         siretError: false,
         siretRules: [],
@@ -310,19 +312,21 @@
           : [];
         return true;
       },
-      businessNameWatched() {
+      businessNameWatched () {
         if (this.businessName.length < 1) {
           this.businessNameRules = ['La raison sociale est obligatoire.'];
           this.businessNameError = true;
           return true;
         }
-        for (let i in this.businesses) {
-          if (this.businessName.toLowerCase() === this.businesses[i].name.toLowerCase()) {
-            this.businessNameRules = ['Une entreprise de ce nom-là existe déjà.'];
-            this.businessNameError = true;
-            return true;
+        if (Number(this.tabActive) === 1)
+          for (let i in this.businesses) {
+            if (this.businessName.toLowerCase() === this.businesses[i].name.toLowerCase()) {
+              this.businessNameRules = ['Une entreprise de ce nom-là existe déjà.'];
+              this.businessNameError = true;
+              return true;
+            }
           }
-        }
+
         this.businessNameRules = [];
         this.businessNameError = false;
         return true;
@@ -333,15 +337,15 @@
           this.siretError = true;
           return true;
         }
-
-        for (let i in this.businesses) {
-          if (this.siret.toLowerCase().replace(/\s/g,'')
-            === this.businesses[i].siret.toLowerCase().replace(/\s/g,'')) {
-            this.siretRules = ['Un numéro similaire existe déjà.'];
-            this.siretError = true;
-            return true;
+        if (Number(this.tabActive) === 1)
+          for (let i in this.businesses) {
+            if (this.siret.toLowerCase().replace(/\s/g,'')
+              === this.businesses[i].siret.toLowerCase().replace(/\s/g,'')) {
+              this.siretRules = ['Un numéro similaire existe déjà.'];
+              this.siretError = true;
+              return true;
+            }
           }
-        }
 
         this.siretRules = [];
         this.siretError = false;
@@ -354,16 +358,16 @@
           this.businessWebsiteUrlError = true;
           return true;
         }
-
-        for (let i in this.businesses) {
-          if (this.businesses[i].websiteUrl
-            && this.businessWebsiteUrl.toLowerCase().replace(/\s/g,'')
-            === this.businesses[i].websiteUrl.toLowerCase().replace(/\s/g,'')) {
-            this.businessWebsiteUrlRules = ['Une URL similaire existe déjà.'];
-            this.businessWebsiteUrlError = true;
-            return true;
+        if (Number(this.tabActive) === 1)
+          for (let i in this.businesses) {
+            if (this.businesses[i].websiteUrl
+              && this.businessWebsiteUrl.toLowerCase().replace(/\s/g,'')
+              === this.businesses[i].websiteUrl.toLowerCase().replace(/\s/g,'')) {
+              this.businessWebsiteUrlRules = ['Une URL similaire existe déjà.'];
+              this.businessWebsiteUrlError = true;
+              return true;
+            }
           }
-        }
 
         this.businessWebsiteUrlRules = [];
         this.businessWebsiteUrlError = false;
@@ -376,6 +380,7 @@
           .then((businesses) => {
             if (businesses && businesses.length > 0) {
               this.businesses = businesses;
+              this.alert = false;
             } else {
               // Will continue until the server responds
               this.alertStatus = 'error';
@@ -384,7 +389,7 @@
 
               setTimeout(() => {
                 this.loadBusinesses();
-              }, 8000);
+              }, 10000);
             }
           })
           .catch((error) => {
@@ -409,17 +414,51 @@
       submit () {
         if (this.$refs.form.validate()
         && !this.businessNameError && !this.siretError && !this.businessWebsiteUrlError) {
-          addContactWithBusiness(
-            this.firstName,
-            this.lastName,
-            this.mail,
-            this.phone,
-            this.job,
-            this.password,
-            this.businessName,
-            this.siret,
-            this.businessWebsiteUrl
-          );
+          // Existant business
+          if (Number(this.tabActive) === 0) {
+            let businessId;
+            for (let i in this.businesses) {
+              if (this.businesses[i].name === this.businessName) {
+                businessId = this.businesses[i].id;
+              }
+            }
+            // If no id has been found
+            if (!businessId) {
+              // TODO Call a global method to show an alert
+              new Alert();
+              return ;
+            }
+            addContactWithExistantBusiness(
+              this.firstName,
+              this.lastName,
+              this.mail,
+              this.phone,
+              this.job,
+              this.password,
+              businessId
+            )
+              .then((data) => {
+                login(this.mail, this.password);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+          // New business
+          else if (Number(this.tabActive) === 1) {
+            addContactWithBusiness(
+              this.firstName,
+              this.lastName,
+              this.mail,
+              this.phone,
+              this.job,
+              this.password,
+              this.businessName,
+              this.activityArea,
+              this.siret,
+              this.businessWebsiteUrl
+            );
+          }
         }
       }
     }

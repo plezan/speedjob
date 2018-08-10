@@ -27,7 +27,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http.csrf().disable().cors().and().authorizeRequests()
-      .antMatchers(SIGN_UP_URL, "/businesses", "/contactsBusiness/addOneWithBusiness")
+      .antMatchers(SIGN_UP_URL, "/businesses", "/contactsBusiness/withBusiness", "/contactsBusiness/withExistantBusiness")
       .permitAll()
       .anyRequest().authenticated()
       .and()

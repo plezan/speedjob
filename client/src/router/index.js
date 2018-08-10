@@ -5,11 +5,11 @@ import Menu from '@/components/layouts/menu'
 import StudentHome from '@/components/student/StudentHome'
 import StudentProfil from '@/components/student/StudentProfil'
 import Blank from '@/components/layouts/blank'
-// import Menu from '@/components/layouts/menu'
-// import HelloWorld from '@/components/HelloWorld'
-import SignUpContactBusiness from '@/components/contactBusiness/views/signUpContactBusiness'
+// import Menu from '@/components/layouts/menu';
+// import HelloWorld from '@/components/HelloWorld';
+import SignUpContactBusiness from '@/components/contactBusiness/views/signUpContactBusiness';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -35,10 +35,9 @@ export default new Router({
         }
       ]
     },
-
     {
       path: '*',
       redirect: '/signUpBusiness'
     }
   ]
-})
+});

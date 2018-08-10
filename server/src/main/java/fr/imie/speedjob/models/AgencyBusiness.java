@@ -1,6 +1,7 @@
 package fr.imie.speedjob.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,7 +15,7 @@ public class AgencyBusiness {
   @Column(nullable = false)
   private String name;
 
-  @ManyToMany(mappedBy = "agenciesBusiness")
+  @ManyToMany(mappedBy = "agenciesBusiness", cascade = CascadeType.ALL)
   @JsonIgnoreProperties("agenciesBusiness")
   private List<ContactBusiness> contactsBusiness;
 
@@ -28,12 +29,18 @@ public class AgencyBusiness {
   @JsonIgnoreProperties("agenciesBusiness")
   private Business business;
 
-  public AgencyBusiness() {}
+  @Value("${some.key:false}")
+  private boolean isHeadOffice;
+
+  public AgencyBusiness() {
+    this.isHeadOffice = false;
+  }
 
   public AgencyBusiness(String name, Address address, Business business) {
     this.name = name;
     this.address = address;
     this.business = business;
+    this.isHeadOffice = false;
   }
 
   public Long getId() {
@@ -76,14 +83,11 @@ public class AgencyBusiness {
     this.business = business;
   }
 
-  @Override
-  public String toString() {
-    return "AgencyBusiness{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", contactsBusiness=" + contactsBusiness +
-            ", address=" + address +
-            ", contactBusiness=" + business +
-            '}';
+  public boolean isHeadOffice() {
+    return isHeadOffice;
+  }
+
+  public void setHeadOffice(boolean headOffice) {
+    isHeadOffice = headOffice;
   }
 }

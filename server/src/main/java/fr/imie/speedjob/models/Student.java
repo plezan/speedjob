@@ -116,17 +116,4 @@ public class Student {
   public void setUser(User user) {
     this.user = user;
   }
-
-  @Override
-  public String toString() {
-    return "Student{" +
-            "id=" + id +
-            ", birthDate=" + birthDate +
-            ", validationStatus=" + validationStatus +
-            ", inResearch=" + inResearch +
-            ", description='" + description + '\'' +
-            ", cv='" + cv + '\'' +
-            ", user=" + user +
-            '}';
-  }
 }

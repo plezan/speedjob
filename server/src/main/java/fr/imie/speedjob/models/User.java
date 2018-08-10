@@ -102,19 +102,4 @@ public class User {
   public void setStudent(Student student) {
     this.student = student;
   }
-
-  @Override
-  public String toString() {
-    return "User{" +
-      "id=" + id +
-      ", firstName='" + firstName + '\'' +
-      ", lastName='" + lastName + '\'' +
-      ", password='" + password + '\'' +
-      ", mail='" + mail + '\'' +
-      ", phone='" + phone + '\'' +
-      ", hasProfileImage=" + hasProfileImage +
-      ", contactBusiness=" + contactBusiness +
-      ", student=" + student +
-      '}';
-  }
 }
